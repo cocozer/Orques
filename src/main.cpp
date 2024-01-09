@@ -17,7 +17,7 @@ int main()
         ctx.background(p6::NamedColor::GreenCrayola);
         ctx.circle(
             p6::Center{ctx.mouse()},
-            p6::Radius{0.3f}
+            p6::Radius{0.2f}
         );
     };
 
