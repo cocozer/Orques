@@ -1,26 +1,31 @@
+#include <imgui.h>
 #include <cstdlib>
 #define DOCTEST_CONFIG_IMPLEMENT
+#include <p6/p6.h>
 #include "doctest/doctest.h"
 #include "p6/p6.h"
 
 int main()
 {
-    // Run the tests
-    if (doctest::Context{}.run() != 0)
-        return EXIT_FAILURE;
-
-    // Actual application code
-    auto ctx = p6::Context{{.title = "Simple-p6-Setup"}};
-    ctx.maximize_window();
-    // Declare your infinite update loop.
-    ctx.update = [&]() {
-        ctx.background(p6::NamedColor::PinkLace);
-        ctx.circle(
-            p6::Center{ctx.mouse()},
-            p6::Radius{0.7f}
-        );
+    auto        ctx           = p6::Context{{1280, 720, "Dear ImGui"}};
+    auto        square_radius = 0.5f;
+    auto        boids_number  = 10;
+    std::string text          = "Hello";
+    ctx.imgui                 = [&]() {
+        // Show a simple window
+        ImGui::Begin("Test");
+        ImGui::SliderFloat("Square size", &square_radius, 0.f, 1.f);
+        ImGui::SliderInt("Boids number", &boids_number, 0, 50);
+        ImGui::InputText("Text", &text);
+        ImGui::End();
+        // Show the official ImGui demo window
+        // It is very useful to discover all the widgets available in ImGui
+        ImGui::ShowDemoWindow();
     };
-
-    // Should be done last. It starts the infinite loop.
+    ctx.update = [&]() {
+        ctx.background({1, 1, 0, 1});
+        ctx.square(p6::Center{}, p6::Radius{square_radius});
+        ctx.circle(p6::Center{}, p6::Radius{.1f});
+    };
     ctx.start();
 }
