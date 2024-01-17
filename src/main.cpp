@@ -14,7 +14,7 @@ int main()
     ctx.maximize_window();
     // Declare your infinite update loop.
     ctx.update = [&]() {
-        ctx.background(p6::NamedColor::GreenCrayola);
+        ctx.background(p6::NamedColor::PinkLace);
         ctx.circle(
             p6::Center{ctx.mouse()},
             p6::Radius{0.7f}
