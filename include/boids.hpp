@@ -10,8 +10,8 @@ private:
     float vy;
 
 public:
-    Boids();                                     // Default constructor
-    Boids(float x, float y);                     // Constructor by position
-    Boids(float x, float y, float vx, float vy); // Constructor by position and velocity
+    Boids();                                                                 // Default constructor
+    Boids(const float& x, const float& y);                                   // Constructor by position
+    Boids(const float& x, const float& y, const float& vx, const float& vy); // Constructor by position and velocity
 };
 } // namespace boids
