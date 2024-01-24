@@ -2,8 +2,10 @@
 #include <cstdlib>
 #define DOCTEST_CONFIG_IMPLEMENT
 #include <p6/p6.h>
+#include "boids.hpp"
 #include "doctest/doctest.h"
 #include "p6/p6.h"
+
 
 int main()
 {
