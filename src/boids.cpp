@@ -12,4 +12,10 @@ Boids::Boids(const float& x, const float& y)
 Boids::Boids(const float& x, const float& y, const float& vx, const float& vy)
     : size(0.1), x(x), y(y), vx(vx), vy(vy)
 {}
+
+Boids::UpdatePosition()
+    :
+
+Boids::UpdateVelocity()
+
 } // namespace boids
