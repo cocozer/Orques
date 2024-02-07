@@ -45,11 +45,6 @@ void Boids::RemoveBoid(int index)
     }
 }
 
-Boid& Boids::GetBoid(int index)
-{
-    return boids[index];
-}
-
 const Boid& Boids::GetBoid(int index) const
 {
     return boids[index];

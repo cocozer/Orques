@@ -32,7 +32,6 @@ public:
     // Méthodes pour manipuler le vecteur de boids
     void        AddBoid(const Boid& boid);
     void        RemoveBoid(int index);
-    Boid&       GetBoid(int index);
     const Boid& GetBoid(int index) const;
     int         NumBoids() const;
 
