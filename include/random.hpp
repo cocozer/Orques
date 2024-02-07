@@ -1,14 +1,14 @@
 #pragma once
-#include <iostream>
 #include <cmath>
-#include <random>
 #include <cstdio>
 #include <cstdlib>
-#include <thread>
 #include <ctime>
+#include <iostream>
+#include <random>
+#include <thread>
 
-namespace randgen { 
+namespace randgen {
 
-    double Rand01();
+double Rand01();
 
 }
