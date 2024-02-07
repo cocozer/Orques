@@ -1,16 +1,14 @@
 #pragma once
 
 #include <vector>
+#include "glm/glm.hpp"
 
 class Boid {
 private:
-    float size;
-    float x;
-    float y;
-    float vx;
-    float vy;
-    float ax;
-    float ay;
+    float     size;
+    glm::vec2 pos;
+    glm::vec2 velocity;
+    glm::vec2 acceleration;
 
 public:
     Boid();                                                                 // Default constructor
