@@ -11,6 +11,7 @@ private:
     float vy;
     float ax;
     float ay;
+    float u;
 
 public:
     Boid();                                                                 // Default constructor

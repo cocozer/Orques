@@ -1,5 +1,5 @@
 #include "boids.hpp"
-
+#include "boid.hpp"
 
 namespace boids {
 
