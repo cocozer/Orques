@@ -5,12 +5,12 @@
 
 namespace boids {
 
-class Boids {
+class Flock {
 private:
-    std::vector<Boid> boids; // Vecteur de boids
+    std::vector<Boid> flock; // Vecteur de boids
 
 public:
-    Boids(int n); // Constructeur pour créer n boids
+    Flock(int n); // Constructeur pour créer n boids
 
     // Méthodes pour manipuler le vecteur de boids
     void        AddBoid(const Boid& boid);

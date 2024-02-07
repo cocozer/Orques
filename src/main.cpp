@@ -3,9 +3,10 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 #include <p6/p6.h>
 #include <interface.hpp>
-#include "boids.hpp"
 #include "doctest/doctest.h"
+#include "flock.hpp"
 #include "p6/p6.h"
+
 
 int main()
 {
