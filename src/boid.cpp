@@ -1,5 +1,4 @@
 #include "boid.hpp"
-#include "boids.hpp"
 
 Boid::Boid()
     : size(0.1), x(0.0), y(0.0), vx(0.0), vy(0.0)
