@@ -42,6 +42,6 @@ Interface::~Interface()
 
 void Interface::afficher()
 {
-    flock = boids::Flock(15);
+    flock = boids::Flock(50);
     ctx.start();
 }
