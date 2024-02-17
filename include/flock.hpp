@@ -11,6 +11,7 @@ private:
     float             avoid_factor;
     float             matching_factor;
     float             centering_factor;
+    float             turn_factor;
     float             protected_range;
     float             visible_range;
 
@@ -23,6 +24,7 @@ public:
     void        AddBoid(const Boid& boid);
     void        RemoveBoid(int index);
     const Boid& GetBoid(int index) const;
+    const float GetTurnfactor() const;
     int         NumBoids() const;
 
     // Méthodes pour mettre à jour tous les boids dans le vecteur
@@ -32,7 +34,7 @@ public:
     void               Separation();
     void               Alignment();
     void               Cohesion();
-    void               CheckOverflow(float limit);
+    void               CheckOverflow(float limit, float turnfactor);
     // void UpdateVelocities();
 };
 } // namespace boids

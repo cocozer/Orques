@@ -6,12 +6,12 @@
 namespace boids {
 
 Flock::Flock()
-    : flock(5), avoid_factor(0.01), matching_factor(0.001), centering_factor(0.0007), protected_range(0.05), visible_range(0.5)
+    : flock(5), avoid_factor(0.01), matching_factor(0.001), centering_factor(0.001), turn_factor(0.001), protected_range(0.05), visible_range(0.5)
 {
 }
 
 Flock::Flock(int n)
-    : flock(n), avoid_factor(0.01), matching_factor(0.001), centering_factor(0.0007), protected_range(0.05), visible_range(0.5)
+    : flock(n), avoid_factor(0.01), matching_factor(0.001), centering_factor(0.001), turn_factor(0.001), protected_range(0.05), visible_range(0.5)
 {
 }
 
@@ -40,6 +40,11 @@ void Flock::RemoveBoid(int index)
 const Boid& Flock::GetBoid(int index) const
 {
     return flock[index];
+}
+
+const float Flock::GetTurnfactor() const
+{
+    return turn_factor;
 }
 
 int Flock::NumBoids() const
@@ -155,11 +160,11 @@ void Flock::Cohesion()
     }
 }
 
-void Flock::CheckOverflow(float limit)
+void Flock::CheckOverflow(float limit, float turnfactor)
 {
     for (auto& boid : flock)
     {
-        boid.checkOverflow(limit);
+        boid.checkOverflow(limit, turnfactor);
     }
 }
 
