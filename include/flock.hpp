@@ -10,13 +10,14 @@ private:
     std::vector<Boid> flock; // Vecteur de boids
     float             avoid_factor;
     float             matching_factor;
+    float             centering_factor;
     float             protected_range;
     float             visible_range;
 
 public:
     Flock();
-    Flock(int n);                                            // Constructeur pour créer n boids
-    Flock(int n, float avoid_factor, float matching_factor); // Constructeur pour créer n boids avec un facteur d'évitement de "avoid_factor"
+    Flock(int n);                                                                    // Constructeur pour créer n boids
+    Flock(int n, float avoid_factor, float matching_factor, float centering_factor); // Constructeur pour créer n boids avec un facteur d'évitement de "avoid_factor"
 
     // Méthodes pour manipuler le vecteur de boids
     void        AddBoid(const Boid& boid);
@@ -30,6 +31,7 @@ public:
     std::vector<Boid>& GetAllBoids();
     void               Separation();
     void               Alignment();
+    void               Cohesion();
     void               CheckOverflow(float limit);
     // void UpdateVelocities();
 };

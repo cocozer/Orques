@@ -27,6 +27,7 @@ Interface::Interface()
         // flock.MoveRandomly();
         flock.Separation();
         flock.Alignment();
+        flock.Cohesion();
 
         for (Boid& boid : flock.GetAllBoids())
         {
