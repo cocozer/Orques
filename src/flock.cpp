@@ -6,17 +6,17 @@
 namespace boids {
 
 Flock::Flock()
-    : flock(5), avoid_factor(0.01)
+    : flock(5), avoid_factor(0.001), matching_factor(0.1), protected_range(0.01), visible_range(0.5)
 {
 }
 
 Flock::Flock(int n)
-    : flock(n), avoid_factor(0.01)
+    : flock(n), avoid_factor(0.01), matching_factor(0.01), protected_range(0.01), visible_range(0.5)
 {
 }
 
-Flock::Flock(int n, float avoid_factor)
-    : flock(n), avoid_factor(avoid_factor)
+Flock::Flock(int n, float avoid_factor, float matching_factor)
+    : flock(n), avoid_factor(avoid_factor), matching_factor(matching_factor), protected_range(0.01), visible_range(0.5)
 {
 }
 
@@ -78,14 +78,58 @@ void Flock::Separation()
         {
             if (&boid != &other_boid)
             {
-                close_d.x += boid.getPos().x - other_boid.getPos().x;
-                close_d.y += boid.getPos().y - other_boid.getPos().y;
+                float distance = glm::distance(boid.getPos(), other_boid.getPos());
+                if (distance < protected_range)
+                {
+                    close_d.x += boid.getPos().x - other_boid.getPos().x;
+                    close_d.y += boid.getPos().y - other_boid.getPos().y;
+                }
             }
         }
         glm::vec2 newVel;
         newVel.x = boid.getVel().x + close_d.x * avoid_factor;
         newVel.y = boid.getVel().y + close_d.y * avoid_factor;
         boid.changeVelocity(newVel);
+    }
+}
+
+void Flock::Alignment()
+{
+    for (auto& boid : flock)
+    {
+        glm::vec2 vel_avg           = {0, 0};
+        float     neighboring_boids = 0;
+        glm::vec2 close_d           = {0, 0};
+        for (auto& other_boid : flock)
+        {
+            if (&boid != &other_boid)
+            {
+                float distance = glm::distance(boid.getPos(), other_boid.getPos());
+                if (distance > visible_range)
+                {
+                    vel_avg.x += other_boid.getVel().x;
+                    vel_avg.y += other_boid.getVel().y;
+                    neighboring_boids += 1;
+                }
+            }
+        }
+        if (neighboring_boids > 0)
+        {
+            vel_avg.x = vel_avg.x / neighboring_boids;
+            vel_avg.y = vel_avg.y / neighboring_boids;
+            glm::vec2 newVel;
+            newVel.x = boid.getVel().x + (vel_avg.x - boid.getVel().x * matching_factor);
+            newVel.y = boid.getVel().y + (vel_avg.y - boid.getVel().y * matching_factor);
+            boid.changeVelocity(newVel);
+        }
+    }
+}
+
+void Flock::CheckOverflow(float limit)
+{
+    for (auto& boid : flock)
+    {
+        boid.checkOverflow(limit);
     }
 }
 

@@ -20,5 +20,6 @@ public:
     float     getSize() const;
     void      updatePosition();
     void      changeVelocity(glm::vec2 newVelocity);
+    void      checkOverflow(float limit); // Check if the boid is outside the window, if he is, invert position
     // void UpdateVelocity();
 };

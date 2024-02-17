@@ -22,10 +22,11 @@ Interface::Interface()
     ctx.update = [&]() {
         ctx.background({1, 1, 0, 1});
         ctx.square(p6::Center{}, p6::Radius{rayon_carre});
-
+        // flock.CheckOverflow(rayon_carre);
         flock.UpdatePositions();
-        flock.MoveRandomly();
+        // flock.MoveRandomly();
         flock.Separation();
+        flock.Alignment();
 
         for (Boid& boid : flock.GetAllBoids())
         {
@@ -41,5 +42,5 @@ Interface::~Interface()
 void Interface::afficher()
 {
     flock = boids::Flock(3);
-    ctx.start(); // Déplacez cette ligne si nécessaire
+    ctx.start();
 }
