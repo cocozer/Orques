@@ -6,12 +6,12 @@
 namespace boids {
 
 Flock::Flock()
-    : flock(5), avoid_factor(0.01), matching_factor(0.001), centering_factor(0.001), turn_factor(0.001), protected_range(0.05), visible_range(0.5)
+    : flock(5), avoid_factor(0.001), matching_factor(0.005), centering_factor(0.0001), turn_factor(0.001), protected_range(0.05), visible_range(0.5)
 {
 }
 
 Flock::Flock(int n)
-    : flock(n), avoid_factor(0.01), matching_factor(0.001), centering_factor(0.001), turn_factor(0.001), protected_range(0.05), visible_range(0.5)
+    : flock(n), avoid_factor(0.001), matching_factor(0.005), centering_factor(0.0001), turn_factor(0.001), protected_range(0.05), visible_range(0.5)
 {
 }
 
