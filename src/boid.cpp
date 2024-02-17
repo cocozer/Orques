@@ -12,7 +12,26 @@ Boid::Boid(const float& x, const float& y, const float& vx, const float& vy)
     : size(0.1), pos(x, y), velocity(vx, vy)
 {}
 
-void Boid::UpdatePosition()
+glm::vec2 Boid::getPos() const
+{
+    return pos;
+}
+
+glm::vec2 Boid::getVel() const
+{
+    return velocity;
+}
+
+float Boid::getSize() const
+{
+    return size;
+}
+
+void Boid::updatePosition()
 {
     pos += velocity;
+}
+void Boid::changeVelocity(glm::vec2 newVelocity)
+{
+    velocity = newVelocity;
 }

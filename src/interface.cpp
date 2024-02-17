@@ -1,4 +1,5 @@
 #include "interface.hpp"
+#include "flock.hpp"
 
 Interface::Interface()
     : ctx{{1280, 720, "Cher ImGui"}}, rayon_carre(0.5f), position_cercleX(0), position_cercleY(0), nombre_boids(10), taille_boids(0.5f), texte("Test")
@@ -21,7 +22,15 @@ Interface::Interface()
     ctx.update = [&]() {
         ctx.background({1, 1, 0, 1});
         ctx.square(p6::Center{}, p6::Radius{rayon_carre});
-        ctx.circle({position_cercleX, position_cercleY}, p6::Radius{0.1f});
+
+        flock.UpdatePositions();
+        flock.MoveRandomly();
+        flock.Separation();
+
+        for (Boid& boid : flock.GetAllBoids())
+        {
+            ctx.circle({boid.getPos().x, boid.getPos().y}, p6::Radius{boid.getSize()});
+        }
     };
 }
 
@@ -31,5 +40,6 @@ Interface::~Interface()
 
 void Interface::afficher()
 {
-    ctx.start();
+    flock = boids::Flock(3);
+    ctx.start(); // Déplacez cette ligne si nécessaire
 }

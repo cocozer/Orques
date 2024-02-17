@@ -15,6 +15,10 @@ public:
     Boid(const float& x, const float& y);                                   // Constructor by position
     Boid(const float& x, const float& y, const float& vx, const float& vy); // Constructor by position and velocity
 
-    void UpdatePosition();
+    glm::vec2 getPos() const;
+    glm::vec2 getVel() const;
+    float     getSize() const;
+    void      updatePosition();
+    void      changeVelocity(glm::vec2 newVelocity);
     // void UpdateVelocity();
 };
