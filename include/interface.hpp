@@ -19,6 +19,9 @@ private: // on déclare les variables membres de la classe Interface
     float        position_cercleY;
     int          nombre_boids;
     float        taille_boids;
+    int separation = 50;
+    int alignement = 50;
+    int cohesion = 50;
     std::string  texte;
     boids::Flock flock;
 };

@@ -12,6 +12,9 @@ Interface::Interface()
         ImGui::SliderFloat("Position cercle Y", &position_cercleY, 0.f, 1.f);
         ImGui::SliderInt("Nombre de Boids", &nombre_boids, 0, 50);
         ImGui::SliderFloat("Taille des Boids", &taille_boids, 0.02f, 0.9f);
+        ImGui::SliderInt("Séparation", &separation, 0, 100);
+        ImGui::SliderInt("Alignement", &alignement, 0, 100);
+        ImGui::SliderInt("Cohésion", &cohesion, 0, 100);
         ImGui::InputText("Texte", &texte);
         ImGui::End();
 
