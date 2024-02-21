@@ -39,19 +39,19 @@ void Boid::changeVelocity(glm::vec2 newVelocity)
 
 void Boid::checkOverflow(float limit, float turnfactor)
 {
-    if (pos.x < -limit)
+    if (pos.x < -limit + size)
     {
         velocity.x += turnfactor;
     }
-    if (pos.x > limit)
+    if (pos.x > limit - size)
     {
         velocity.x -= turnfactor;
     }
-    if (pos.y > limit)
+    if (pos.y > limit - size)
     {
         velocity.y -= turnfactor;
     }
-    if (pos.y < -limit)
+    if (pos.y < -limit + size)
     {
         velocity.y += turnfactor;
     }
