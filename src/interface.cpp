@@ -2,7 +2,7 @@
 #include "flock.hpp"
 
 Interface::Interface()
-    : ctx{{1280, 720, "Cher ImGui"}}, rayon_carre(0.5f), position_cercleX(0), position_cercleY(0), nombre_boids(10), taille_boids(0.5f), texte("Test")
+    : ctx{{1280, 720, "Cher ImGui"}}, rayon_carre(0.5f), position_cercleX(0), position_cercleY(0), nombre_boids(10), taille_boids(0.5f), separation(50), alignement(50), cohesion(50), texte("Test")
 {
     ctx.imgui = [&]() {
         // Affiche une fenêtre simple
