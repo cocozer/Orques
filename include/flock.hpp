@@ -8,33 +8,37 @@ namespace boids {
 class Flock {
 private:
     std::vector<Boid> flock; // Vecteur de boids
-    float             avoid_factor;
-    float             matching_factor;
-    float             centering_factor;
-    float             turn_factor;
-    float             protected_range;
-    float             visible_range;
+    double            avoid_factor{0.004};
+    double            matching_factor{0.005};
+    double            centering_factor{0.0001};
+    double            turn_factor{0.001};
+    double            protected_range{0.05};
+    double            visible_range{0.5};
 
 public:
-    Flock();
-    Flock(int n);                                                                    // Constructeur pour créer n boids
+    // Flock();
+    Flock(int n = 5);                                                                // Constructeur pour créer n boids
     Flock(int n, float avoid_factor, float matching_factor, float centering_factor); // Constructeur pour créer n boids avec un facteur d'évitement de "avoid_factor"
 
     // Méthodes pour manipuler le vecteur de boids
     void        AddBoid(const Boid& boid);
     void        RemoveBoid(int index);
-    const Boid& GetBoid(int index) const;
-    const float GetTurnfactor() const;
-    int         NumBoids() const;
+    const Boid& GetBoid(int index);
+    // const float GetTurnfactor() const;
+    int NumBoids() const;
 
+    void                     Update(float limit);
+    const std::vector<Boid>& GetAllBoids();
+
+private:
     // Méthodes pour mettre à jour tous les boids dans le vecteur
-    void               UpdatePositions();
-    void               MoveRandomly();
-    std::vector<Boid>& GetAllBoids();
-    void               Separation();
-    void               Alignment();
-    void               Cohesion();
-    void               CheckOverflow(float limit, float turnfactor);
+    void UpdatePositions();
+    void MoveRandomly();
+    void Separation();
+    void Alignment();
+    void Cohesion();
+    void CheckOverflow(float limit);
+    void assert_index_is_valid(int index);
     // void UpdateVelocities();
 };
 } // namespace boids

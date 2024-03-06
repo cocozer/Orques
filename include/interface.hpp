@@ -7,16 +7,14 @@
 
 class Interface {
 public:
-    Interface();  // constructeur
-    ~Interface(); // destructeur
+    Interface(); // constructeur
 
-    void afficher(); // fonction qui affiche l'interface graphique
+    void run_update_loop(); // fonction qui affiche l'interface graphique
 
 private: // on déclare les variables membres de la classe Interface
     p6::Context  ctx;
     float        rayon_carre;
-    float        position_cercleX;
-    float        position_cercleY;
+    glm::vec2    position_cercle;
     int          nombre_boids;
     float        taille_boids;
     int          separation;

@@ -5,18 +5,18 @@
 
 namespace boids {
 
-Flock::Flock()
-    : flock(5), avoid_factor(0.004), matching_factor(0.005), centering_factor(0.0001), turn_factor(0.001), protected_range(0.05), visible_range(0.5)
-{
-}
+// Flock::Flock()
+//     : Flock(5)
+// {
+// }
 
 Flock::Flock(int n)
-    : flock(n), avoid_factor(0.004), matching_factor(0.005), centering_factor(0.0001), turn_factor(0.001), protected_range(0.05), visible_range(0.5)
+    : flock(n)
 {
 }
 
 Flock::Flock(int n, float avoid_factor, float matching_factor, float centering_factor)
-    : flock(n), avoid_factor(avoid_factor), matching_factor(matching_factor), centering_factor(centering_factor), protected_range(0.01), visible_range(0.5)
+    : flock(n), avoid_factor(avoid_factor), matching_factor(matching_factor), centering_factor(centering_factor)
 {
 }
 
@@ -37,19 +37,28 @@ void Flock::RemoveBoid(int index)
     }
 }
 
-const Boid& Flock::GetBoid(int index) const
+const Boid& Flock::GetBoid(int index)
 {
+    assert_index_is_valid(index);
     return flock[index];
 }
 
-const float Flock::GetTurnfactor() const
+void Flock::assert_index_is_valid(int index)
 {
-    return turn_factor;
+    if (index < 0 || index > static_cast<int>(flock.size()))
+    {
+        assert(false);
+    }
 }
+
+// const float Flock::GetTurnfactor() const
+// {
+//     return turn_factor;
+// }
 
 int Flock::NumBoids() const
 {
-    return flock.size();
+    return static_cast<int>(flock.size());
 }
 
 void Flock::UpdatePositions()
@@ -60,7 +69,7 @@ void Flock::UpdatePositions()
     }
 }
 
-std::vector<Boid>& Flock::GetAllBoids()
+const std::vector<Boid>& Flock::GetAllBoids()
 {
     return flock;
 }
@@ -69,7 +78,7 @@ void Flock::MoveRandomly()
 {
     for (auto& boid : flock)
     {
-        glm::vec2 newVel = {randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025};
+        const glm::vec2 newVel = {randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025};
         boid.changeVelocity(newVel);
     }
 }
@@ -79,18 +88,19 @@ void Flock::Separation()
     for (auto& boid : flock)
     {
         glm::vec2 close_d = {0, 0};
-        for (auto& other_boid : flock)
+        for (const auto& other_boid : flock)
         {
-            if (&boid != &other_boid)
+            if (&boid == &other_boid)
+                continue;
+
+            float distance = glm::distance(boid.getPos(), other_boid.getPos());
+            if (distance < protected_range)
             {
-                float distance = glm::distance(boid.getPos(), other_boid.getPos());
-                if (distance < protected_range)
-                {
-                    close_d.x += boid.getPos().x - other_boid.getPos().x;
-                    close_d.y += boid.getPos().y - other_boid.getPos().y;
-                }
+                close_d.x += boid.getPos().x - other_boid.getPos().x;
+                close_d.y += boid.getPos().y - other_boid.getPos().y;
             }
         }
+
         glm::vec2 newVel;
         newVel.x = boid.getVel().x + close_d.x * avoid_factor;
         newVel.y = boid.getVel().y + close_d.y * avoid_factor;
@@ -104,17 +114,17 @@ void Flock::Alignment()
     {
         glm::vec2 vel_avg           = {0, 0};
         float     neighboring_boids = 0;
-        for (auto& other_boid : flock)
+        for (const auto& other_boid : flock)
         {
-            if (&boid != &other_boid)
+            if (&boid == &other_boid)
+                continue;
+
+            const float distance = glm::distance(boid.getPos(), other_boid.getPos());
+            if (distance < visible_range)
             {
-                float distance = glm::distance(boid.getPos(), other_boid.getPos());
-                if (distance < visible_range)
-                {
-                    vel_avg.x += other_boid.getVel().x;
-                    vel_avg.y += other_boid.getVel().y;
-                    neighboring_boids += 1;
-                }
+                vel_avg.x += other_boid.getVel().x;
+                vel_avg.y += other_boid.getVel().y;
+                neighboring_boids += 1;
             }
         }
         if (neighboring_boids > 0)
@@ -160,16 +170,26 @@ void Flock::Cohesion()
     }
 }
 
-void Flock::CheckOverflow(float limit, float turnfactor)
+void Flock::CheckOverflow(float limit)
 {
     for (auto& boid : flock)
     {
-        boid.checkOverflow(limit, turnfactor);
+        boid.checkOverflow(limit, turn_factor);
     }
 }
 
 // void Boids::UpdateVelocities() {
 //     // À implémenter
 // }
+
+void Flock::Update(float limit)
+{
+    CheckOverflow(limit);
+    UpdatePositions();
+    // MoveRandomly();
+    Separation();
+    Alignment();
+    Cohesion();
+}
 
 } // namespace boids
