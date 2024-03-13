@@ -23,7 +23,7 @@ Interface::Interface()
     };
 
     ctx.update = [&]() {
-        ctx.background({1, 1, 0, 1});
+        ctx.background({1, 0.5, 0.7, 1});
         ctx.square(p6::Center{}, p6::Radius{rayon_carre});
         flock.Update(rayon_carre);
 
