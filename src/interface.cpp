@@ -28,7 +28,7 @@ Interface::Interface()
         flock.Update(rayon_carre);
 
         ImGui::SliderFloat("Taille des Boids", &taille_boids, 0.01f, 0.5f);
-        flock.UpdateBoidSize(taille_boids);
+        flock.UpdateBoidSize(taille_boids); //222
 
         for (const Boid& boid : flock.GetAllBoids())
         {
