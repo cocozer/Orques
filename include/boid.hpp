@@ -18,8 +18,10 @@ public:
     glm::vec2 getPos() const;
     glm::vec2 getVel() const;
     float     getSize() const;
+    void      setSize(float newSize);
     void      updatePosition();
     void      changeVelocity(glm::vec2 newVelocity);
     void      checkOverflow(float limit, float turnfactor); // Check if the boid is outside the window, if he is, invert position
+
     // void UpdateVelocity();
 };

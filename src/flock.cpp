@@ -192,4 +192,10 @@ void Flock::Update(float limit)
     Cohesion();
 }
 
+void Flock::UpdateBoidSize(float newSize) {
+    for (Boid& boid : flock) {
+        boid.setSize(newSize);
+    }
+}
+
 } // namespace boids

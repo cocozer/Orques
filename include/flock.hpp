@@ -28,6 +28,7 @@ public:
     int NumBoids() const;
 
     void                     Update(float limit);
+    void UpdateBoidSize(float newSize);
     const std::vector<Boid>& GetAllBoids();
 
 private:
@@ -39,6 +40,7 @@ private:
     void Cohesion();
     void CheckOverflow(float limit);
     void assert_index_is_valid(int index);
+    
     // void UpdateVelocities();
 };
 } // namespace boids

@@ -3,7 +3,7 @@
 #include "glm/gtc/type_ptr.hpp"
 
 Interface::Interface()
-    : ctx{{1280, 720, "Cher ImGui"}}, rayon_carre(0.5f), position_cercle(0, 0), nombre_boids(10), taille_boids(0.5f), separation(50), alignement(50), cohesion(50), texte("Test")
+    : ctx{{1280, 720, "Cher ImGui"}}, rayon_carre(0.5f), position_cercle(0, 0), nombre_boids(10), taille_boids(0.03f), separation(50), alignement(50), cohesion(50), texte("Test")
 {
     ctx.imgui = [&]() {
         // Affiche une fenêtre simple
@@ -26,6 +26,9 @@ Interface::Interface()
         ctx.background({1, 1, 0, 1});
         ctx.square(p6::Center{}, p6::Radius{rayon_carre});
         flock.Update(rayon_carre);
+
+        ImGui::SliderFloat("Taille des Boids", &taille_boids, 0.01f, 0.5f);
+        flock.UpdateBoidSize(taille_boids);
 
         for (const Boid& boid : flock.GetAllBoids())
         {

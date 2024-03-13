@@ -28,6 +28,10 @@ float Boid::getSize() const
     return size;
 }
 
+void Boid::setSize(float newSize) {
+    size = newSize;
+}
+
 void Boid::updatePosition()
 {
     pos += velocity;
