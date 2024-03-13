@@ -11,7 +11,7 @@ Interface::Interface()
         ImGui::SliderFloat("Taille carrée", &rayon_carre, 0.f, 1.f);
         ImGui::SliderFloat2("Position cercle", glm::value_ptr(position_cercle), 0.f, 1.f);
         ImGui::SliderInt("Nombre de Boids", &nombre_boids, 0, 50);
-        ImGui::SliderFloat("Taille des Boids", &taille_boids, 0.02f, 0.9f);
+        ImGui::SliderFloat("Taille des Boids", &taille_boids, 0.015f, 0.1f);
         ImGui::SliderInt("Séparation", &separation, 0, 100);
         ImGui::SliderInt("Alignement", &alignement, 0, 100);
         ImGui::SliderInt("Cohésion", &cohesion, 0, 100);
@@ -27,8 +27,8 @@ Interface::Interface()
         ctx.square(p6::Center{}, p6::Radius{rayon_carre});
         flock.Update(rayon_carre);
 
-        ImGui::SliderFloat("Taille des Boids", &taille_boids, 0.01f, 0.5f);
-        flock.UpdateBoidSize(taille_boids); //222
+        ImGui::SliderFloat("Taille des Boids", &taille_boids, 0.001f, 0.0001f);
+        flock.UpdateBoidSize(taille_boids);
 
         for (const Boid& boid : flock.GetAllBoids())
         {
