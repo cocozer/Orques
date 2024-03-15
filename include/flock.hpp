@@ -28,8 +28,10 @@ public:
     int NumBoids() const;
 
     void                     Update(float limit);
-    void UpdateBoidSize(float newSize);
+    void                     UpdateBoidSize(float newSize);
     const std::vector<Boid>& GetAllBoids();
+    // méthode pour mettre à jour le nombre de boids
+    void SetNumberOfBoids(int num);
 
 private:
     // Méthodes pour mettre à jour tous les boids dans le vecteur
@@ -40,7 +42,7 @@ private:
     void Cohesion();
     void CheckOverflow(float limit);
     void assert_index_is_valid(int index);
-    
+
     // void UpdateVelocities();
 };
 } // namespace boids

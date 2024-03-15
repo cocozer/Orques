@@ -10,6 +10,7 @@ public:
     Interface(); // constructeur
 
     void run_update_loop(); // fonction qui affiche l'interface graphique
+    void setNumberOfBoids(int num);
 
 private: // on déclare les variables membres de la classe Interface
     p6::Context  ctx;

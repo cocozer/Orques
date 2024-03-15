@@ -11,6 +11,10 @@ Interface::Interface()
         ImGui::SliderFloat("Taille carrée", &rayon_carre, 0.f, 1.f);
         ImGui::SliderFloat2("Position cercle", glm::value_ptr(position_cercle), 0.f, 1.f);
         ImGui::SliderInt("Nombre de Boids", &nombre_boids, 0, 50);
+        if (ImGui::IsItemEdited())
+        {
+            setNumberOfBoids(nombre_boids);
+        }
         ImGui::SliderFloat("Taille des Boids", &taille_boids, 0.015f, 0.1f);
         ImGui::SliderInt("Séparation", &separation, 0, 100);
         ImGui::SliderInt("Alignement", &alignement, 0, 100);
@@ -41,4 +45,8 @@ void Interface::run_update_loop()
 {
     flock = boids::Flock(50);
     ctx.start();
+}
+void Interface::setNumberOfBoids(int num)
+{
+    flock = boids::Flock(num);
 }
