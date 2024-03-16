@@ -202,8 +202,8 @@ void Flock::Update(float limit)
 {
     // MoveRandomly();
     Separation();
-    // Alignment();
-    // Cohesion();
+    Alignment();
+    Cohesion();
     CheckOverflow(limit);
     ClampSpeed();
     UpdatePositions();
