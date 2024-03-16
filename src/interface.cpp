@@ -34,10 +34,11 @@ Interface::Interface()
         ImGui::SliderFloat("Taille des Boids", &taille_boids, 0.001f, 0.0001f);
         flock.UpdateBoidSize(taille_boids);
 
-        for (const Boid& boid : flock.GetAllBoids())
-        {
-            ctx.circle(p6::Center{boid.getPos()}, p6::Radius{boid.getSize()});
-        }
+        // for (const Boid& boid : flock.GetAllBoids())
+        // {
+        //     ctx.circle(p6::Center{boid.getPos()}, p6::Radius{boid.getSize()});
+        // }
+        flock.drawFlock(ctx);
     };
 }
 

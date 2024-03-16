@@ -1,4 +1,5 @@
 #include "boid.hpp"
+#include "p6/p6.h"
 #include "random.hpp"
 
 Boid::Boid()
@@ -8,6 +9,17 @@ Boid::Boid()
 Boid::Boid(const float& x, const float& y)
     : size(0.02), pos(x, y), velocity(0.0, 0.0)
 {}
+
+Boid::Boid(float aspectRatio)
+    : size(0.2), pos(p6::random::number(-aspectRatio, aspectRatio), p6::random::number(-1, 1)), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025)
+{
+}
+
+void Boid::drawBoid(p6::Context& ctx) const
+{
+    ctx.circle(p6::Center{this->pos.x, this->pos.y}, p6::Radius(this->size));
+    ctx.use_stroke = false;
+}
 
 Boid::Boid(const float& x, const float& y, const float& vx, const float& vy)
     : size(0.02), pos(x, y), velocity(vx, vy)
@@ -28,7 +40,8 @@ float Boid::getSize() const
     return size;
 }
 
-void Boid::setSize(float newSize) {
+void Boid::setSize(float newSize)
+{
     size = newSize;
 }
 

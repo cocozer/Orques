@@ -20,6 +20,14 @@ Flock::Flock(int n, float avoid_factor, float matching_factor, float centering_f
 {
 }
 
+void Flock::drawFlock(p6::Context& ctx) const
+{
+    for (const Boid& boid : flock)
+    {
+        boid.drawBoid(ctx);
+    }
+} // brief draw boid in p6 window & param ctx the p6 context of creation
+
 void Flock::AddBoid(const Boid& boid)
 {
     flock.push_back(boid);
