@@ -8,12 +8,14 @@ namespace boids {
 class Flock {
 private:
     std::vector<Boid> flock; // Vecteur de boids
-    double            avoid_factor{0.004};
-    double            matching_factor{0.005};
-    double            centering_factor{0.0001};
-    double            turn_factor{0.001};
-    double            protected_range{0.05};
-    double            visible_range{0.5};
+    double            avoid_factor{0.005};
+    double            matching_factor{0.0};
+    double            centering_factor{0.0};
+    double            turn_factor{0.0005};
+    double            protected_range{0.1};
+    double            visible_range{0.0};
+    double            max_speed{0.01};
+    double            min_speed{0.005};
 
 public:
     // Flock();
@@ -42,6 +44,7 @@ private:
     void Separation();
     void Alignment();
     void Cohesion();
+    void ClampSpeed();
     void CheckOverflow(float limit);
     void assert_index_is_valid(int index);
 

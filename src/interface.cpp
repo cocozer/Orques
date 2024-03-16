@@ -3,7 +3,7 @@
 #include "glm/gtc/type_ptr.hpp"
 
 Interface::Interface()
-    : ctx{{1280, 720, "Cher ImGui"}}, rayon_carre(0.5f), position_cercle(0, 0), nombre_boids(10), taille_boids(0.03f), separation(50), alignement(50), cohesion(50), texte("Test")
+    : ctx{{1280, 720, "Cher ImGui"}}, rayon_carre(0.9f), position_cercle(0, 0), nombre_boids(10), taille_boids(0.03f), separation(50), alignement(50), cohesion(50), texte("Test")
 {
     ctx.imgui = [&]() {
         // Affiche une fenêtre simple

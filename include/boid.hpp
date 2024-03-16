@@ -25,6 +25,7 @@ public:
     void      setSize(float newSize);
     void      updatePosition();
     void      changeVelocity(glm::vec2 newVelocity);
+    void      clampSpeed(double max_speed, double min_speed);
     void      checkOverflow(float limit, float turnfactor); // Check if the boid is outside the window, if he is, invert position
 
     // void UpdateVelocity();

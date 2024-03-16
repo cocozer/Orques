@@ -54,21 +54,36 @@ void Boid::changeVelocity(glm::vec2 newVelocity)
     velocity = newVelocity;
 }
 
+void Boid::clampSpeed(double max_speed, double min_speed)
+{
+    float currentSpeed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+
+    if (currentSpeed > max_speed)
+    {
+        velocity.x = (velocity.x / currentSpeed) * max_speed;
+        velocity.y = (velocity.y / currentSpeed) * max_speed;
+    }
+    else if (currentSpeed < min_speed)
+    {
+        velocity.x = (velocity.x / currentSpeed) * min_speed;
+        velocity.y = (velocity.y / currentSpeed) * min_speed;
+    }
+}
 void Boid::checkOverflow(float limit, float turnfactor)
 {
-    if (pos.x < -limit + size)
+    if (pos.x < -limit + 2 * size)
     {
         velocity.x += turnfactor;
     }
-    if (pos.x > limit - size)
+    if (pos.x > limit - 2 * size)
     {
         velocity.x -= turnfactor;
     }
-    if (pos.y > limit - size)
+    if (pos.y > limit - 2 * size)
     {
         velocity.y -= turnfactor;
     }
-    if (pos.y < -limit + size)
+    if (pos.y < -limit + 2 * size)
     {
         velocity.y += turnfactor;
     }

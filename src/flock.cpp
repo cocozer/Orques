@@ -110,8 +110,8 @@ void Flock::Separation()
         }
 
         glm::vec2 newVel;
-        newVel.x = boid.getVel().x + close_d.x * avoid_factor;
-        newVel.y = boid.getVel().y + close_d.y * avoid_factor;
+        newVel.x = boid.getVel().x + (close_d.x * avoid_factor);
+        newVel.y = boid.getVel().y + (close_d.y * avoid_factor);
         boid.changeVelocity(newVel);
     }
 }
@@ -178,6 +178,14 @@ void Flock::Cohesion()
     }
 }
 
+void Flock::ClampSpeed()
+{
+    for (auto& boid : flock)
+    {
+        boid.clampSpeed(max_speed, min_speed);
+    }
+}
+
 void Flock::CheckOverflow(float limit)
 {
     for (auto& boid : flock)
@@ -192,12 +200,13 @@ void Flock::CheckOverflow(float limit)
 
 void Flock::Update(float limit)
 {
-    CheckOverflow(limit);
-    UpdatePositions();
     // MoveRandomly();
     Separation();
-    Alignment();
-    Cohesion();
+    // Alignment();
+    // Cohesion();
+    CheckOverflow(limit);
+    ClampSpeed();
+    UpdatePositions();
 }
 
 void Flock::UpdateBoidSize(float newSize)
