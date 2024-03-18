@@ -225,4 +225,9 @@ void Flock::SetNumberOfBoids(int num)
         AddBoid(newBoid);
     }
 }
+// modifie le facteur d'eloignement
+void Flock::setAvoidFactor(float factor)
+{
+    avoid_factor = static_cast<double>(factor);
+}
 } // namespace boids

@@ -18,7 +18,7 @@ private: // on déclare les variables membres de la classe Interface
     glm::vec2    position_cercle;
     int          nombre_boids;
     float        taille_boids;
-    int          separation;
+    float        separation;
     int          alignement;
     int          cohesion;
     std::string  texte;

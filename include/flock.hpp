@@ -7,8 +7,8 @@ namespace boids {
 
 class Flock {
 private:
-    std::vector<Boid> flock; // Vecteur de boids
-    double            avoid_factor{0.005};
+    std::vector<Boid> flock;               // Vecteur de boids
+    double            avoid_factor{0.005}; // separation
     double            matching_factor{0.0};
     double            centering_factor{0.0};
     double            turn_factor{0.0005};
@@ -36,6 +36,8 @@ public:
     const std::vector<Boid>& GetAllBoids();
     // méthode pour mettre à jour le nombre de boids
     void SetNumberOfBoids(int num);
+    // facteur d'evitement :
+    void setAvoidFactor(float factor);
 
 private:
     // Méthodes pour mettre à jour tous les boids dans le vecteur
