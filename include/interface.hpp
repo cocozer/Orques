@@ -19,8 +19,11 @@ private: // on déclare les variables membres de la classe Interface
     int          nombre_boids;
     float        taille_boids;
     float        separation;
-    int          alignement;
-    int          cohesion;
+    float        protected_range;
+    float        alignement;
+    float        cohesion;
+    float        average_speed;
+    float        turning_factor;
     std::string  texte;
     boids::Flock flock;
 };

@@ -14,8 +14,8 @@ private:
     double            turn_factor{0.0005};
     double            protected_range{0.1};
     double            visible_range{0.0};
-    double            max_speed{0.01};
     double            min_speed{0.005};
+    double            max_speed{0.01};
 
 public:
     // Flock();
@@ -38,6 +38,12 @@ public:
     void SetNumberOfBoids(int num);
     // facteur d'evitement :
     void setAvoidFactor(float factor);
+    // protection range :
+    void setProtectedRange(float factor);
+    void setAlignement(float factor);
+    void setCohesion(float factor);
+    void setAverageSpeed(float factor);
+    void setTurningFactor(float factor);
 
 private:
     // Méthodes pour mettre à jour tous les boids dans le vecteur

@@ -230,4 +230,31 @@ void Flock::setAvoidFactor(float factor)
 {
     avoid_factor = static_cast<double>(factor);
 }
+
+void Flock::setProtectedRange(float factor)
+{
+    protected_range = static_cast<double>(factor);
+}
+
+void Flock::setAlignement(float factor)
+{
+    matching_factor = static_cast<double>(factor);
+}
+
+void Flock::setCohesion(float factor)
+{
+    centering_factor = static_cast<double>(factor);
+}
+
+void Flock::setAverageSpeed(float factor)
+{
+    min_speed = static_cast<double>(factor) - 0.0025;
+    max_speed = static_cast<double>(factor) + 0.0025;
+}
+
+void Flock::setTurningFactor(float factor)
+{
+    turn_factor = static_cast<double>(factor) - 0.0025;
+}
+
 } // namespace boids

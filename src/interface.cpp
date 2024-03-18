@@ -3,7 +3,7 @@
 #include "glm/gtc/type_ptr.hpp"
 
 Interface::Interface()
-    : ctx{{1280, 720, "Cher ImGui"}}, rayon_carre(0.9f), position_cercle(0, 0), nombre_boids(10), taille_boids(0.03f), separation(0.01f), alignement(50), cohesion(50), texte("Test")
+    : ctx{{1280, 720, "Cher ImGui"}}, rayon_carre(0.9f), position_cercle(0, 0), nombre_boids(10), taille_boids(0.03f), separation(0.01f), protected_range(0.1), alignement(1.0f), cohesion(1.0f), average_speed(0.01), turning_factor(0.01), texte("Test")
 {
     ctx.imgui = [&]() {
         // Affiche une fenêtre simple
@@ -16,15 +16,42 @@ Interface::Interface()
             setNumberOfBoids(nombre_boids);
         }
         ImGui::SliderFloat("Taille des Boids", &taille_boids, 0.015f, 0.1f);
-        ImGui::SliderFloat("Séparation", &separation, 0.0f, 0.03f);
         if (ImGui::IsItemEdited())
         {
-            double avoidanceStrength = static_cast<double>(separation);
-            flock.setAvoidFactor(avoidanceStrength);
+            flock.UpdateBoidSize(taille_boids);
         }
-        ImGui::SliderInt("Alignement", &alignement, 0, 100);
-        ImGui::SliderInt("Cohésion", &cohesion, 0, 100);
+        ImGui::SliderFloat("Separation", &separation, 0.0f, 0.03f);
+        if (ImGui::IsItemEdited())
+        {
+            flock.setAvoidFactor(separation);
+        }
+        ImGui::SliderFloat("Protected Range", &protected_range, 0.05f, 0.2f);
+        if (ImGui::IsItemEdited())
+        {
+            flock.setProtectedRange(protected_range);
+        }
+        ImGui::SliderFloat("Alignement", &alignement, 0, 5.0f);
+        if (ImGui::IsItemEdited())
+        {
+            flock.setAlignement(alignement);
+        }
+        ImGui::SliderFloat("Cohésion", &cohesion, 0, 5.0f);
+        if (ImGui::IsItemEdited())
+        {
+            flock.setCohesion(cohesion);
+        }
+        ImGui::SliderFloat("Average Speed", &average_speed, 0.0f, 0.02f);
+        if (ImGui::IsItemEdited())
+        {
+            flock.setAverageSpeed(average_speed);
+        }
+        ImGui::SliderFloat("Turning Factor", &turning_factor, 0.0f, 0.01f);
+        if (ImGui::IsItemEdited())
+        {
+            flock.setTurningFactor(turning_factor);
+        }
         ImGui::InputText("Texte", &texte);
+
         ImGui::End();
 
         // Affiche la fenêtre de démonstration officielle d'ImGui
@@ -35,10 +62,6 @@ Interface::Interface()
         ctx.background({1, 0.5, 0.7, 1});
         ctx.square(p6::Center{}, p6::Radius{rayon_carre});
         flock.Update(rayon_carre);
-
-        ImGui::SliderFloat("Taille des Boids", &taille_boids, 0.001f, 0.0001f);
-        flock.UpdateBoidSize(taille_boids);
-
         // for (const Boid& boid : flock.GetAllBoids())
         // {
         //     ctx.circle(p6::Center{boid.getPos()}, p6::Radius{boid.getSize()});
