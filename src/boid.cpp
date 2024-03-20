@@ -88,3 +88,7 @@ void Boid::checkOverflow(float limit, float turnfactor)
         velocity.y += turnfactor;
     }
 }
+bool Boid::getIsPredator() const
+{
+    return isPredator;
+}

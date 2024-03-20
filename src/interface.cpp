@@ -30,12 +30,12 @@ Interface::Interface()
         {
             flock.setProtectedRange(protected_range);
         }
-        ImGui::SliderFloat("Alignement", &alignement, 0, 0.05f);
+        ImGui::SliderFloat("Alignement", &alignement, 0, 0.05f, "%.5f", 0.00001f);
         if (ImGui::IsItemEdited())
         {
             flock.setAlignement(alignement);
         }
-        ImGui::SliderFloat("Cohésion", &cohesion, 0, 0.005f);
+        ImGui::SliderFloat("Cohésion", &cohesion, 0, 0.005f, "%.5f", 0.00001f);
         if (ImGui::IsItemEdited())
         {
             flock.setCohesion(cohesion);

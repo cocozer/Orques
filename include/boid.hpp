@@ -10,6 +10,7 @@ private:
     glm::vec2 pos;
     glm::vec2 velocity;
     glm::vec2 acceleration;
+    bool      isPredator;
 
 public:
     Boid();                                                                 // Default constructor
@@ -27,6 +28,5 @@ public:
     void      changeVelocity(glm::vec2 newVelocity);
     void      clampSpeed(double max_speed, double min_speed);
     void      checkOverflow(float limit, float turnfactor); // Check if the boid is outside the window, if he is, invert position
-
-    // void UpdateVelocity();
+    bool      getIsPredator() const;
 };

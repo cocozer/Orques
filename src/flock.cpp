@@ -207,6 +207,7 @@ void Flock::Update(float limit)
     CheckOverflow(limit);
     ClampSpeed();
     UpdatePositions();
+    avoidPredators();
 }
 
 void Flock::UpdateBoidSize(float newSize)
@@ -257,4 +258,26 @@ void Flock::setTurningFactor(float factor)
     turn_factor = static_cast<double>(factor) - 0.0025;
 }
 
+void Flock::avoidPredators()
+{
+    for (auto& boid : flock)
+    {
+        for (const auto& other_boid : flock)
+        {
+            if (&boid == &other_boid)
+                continue;
+
+            if (other_boid.getIsPredator())
+            {
+                float distance = glm::distance(boid.getPos(), other_boid.getPos());
+                if (distance < visible_range)
+                {
+                    glm::vec2 avoid_d = boid.getPos() - other_boid.getPos();
+                    glm::vec2 newVel  = boid.getVel() + (avoid_d * glm::vec2(static_cast<float>(fear_predator)));
+                    boid.changeVelocity(newVel);
+                }
+            }
+        }
+    }
+}
 } // namespace boids

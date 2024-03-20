@@ -16,6 +16,7 @@ private:
     double            visible_range{0.3};
     double            min_speed{0.005};
     double            max_speed{0.01};
+    double            fear_predator{0.005};
 
 public:
     // Flock();
@@ -55,6 +56,7 @@ private:
     void ClampSpeed();
     void CheckOverflow(float limit);
     void assert_index_is_valid(int index);
+    void avoidPredators();
 
     // void UpdateVelocities();
 };
