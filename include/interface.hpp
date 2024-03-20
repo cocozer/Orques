@@ -24,6 +24,7 @@ private: // on déclare les variables membres de la classe Interface
     float        cohesion;
     float        average_speed;
     float        turning_factor;
+    float        fear_predator;
     std::string  texte;
     boids::Flock flock;
 };

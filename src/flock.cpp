@@ -257,6 +257,10 @@ void Flock::setTurningFactor(float factor)
 {
     turn_factor = static_cast<double>(factor) - 0.0025;
 }
+void Flock::setAvoidPredator(float fear_predator)
+{
+    fear_predator = static_cast<double>(fear_predator);
+}
 
 void Flock::avoidPredators()
 {

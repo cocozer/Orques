@@ -45,6 +45,7 @@ public:
     void setCohesion(float factor);
     void setAverageSpeed(float factor);
     void setTurningFactor(float factor);
+    void setAvoidPredator(float fear_predator);
 
 private:
     // Méthodes pour mettre à jour tous les boids dans le vecteur

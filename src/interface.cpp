@@ -3,7 +3,7 @@
 #include "glm/gtc/type_ptr.hpp"
 
 Interface::Interface()
-    : ctx{{1280, 720, "Cher ImGui"}}, rayon_carre(0.9f), position_cercle(0, 0), nombre_boids(10), taille_boids(0.03f), separation(0.01f), protected_range(0.1), alignement(0.05f), cohesion(0.001f), average_speed(0.01), turning_factor(0.01), texte("Test")
+    : ctx{{1280, 720, "Cher ImGui"}}, rayon_carre(0.9f), position_cercle(0, 0), nombre_boids(10), taille_boids(0.03f), separation(0.01f), protected_range(0.1), alignement(0.05f), cohesion(0.001f), average_speed(0.01), turning_factor(0.01), fear_predator(0.001f), texte("Test")
 {
     ctx.imgui = [&]() {
         // Affiche une fenêtre simple
@@ -49,6 +49,12 @@ Interface::Interface()
         if (ImGui::IsItemEdited())
         {
             flock.setTurningFactor(turning_factor);
+        }
+        // avoid predators-------------------------------
+        ImGui::SliderFloat("Avoid Predator", &fear_predator, 0.0f, 0.01f);
+        if (ImGui::IsItemEdited())
+        {
+            flock.setAvoidPredator(fear_predator);
         }
         ImGui::InputText("Texte", &texte);
 
