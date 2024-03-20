@@ -118,31 +118,31 @@ void Flock::Separation()
 
 void Flock::Alignment()
 {
-    for (auto& boid : flock)
+    for (auto& boid : flock) // Pour chaque boid
     {
-        glm::vec2 vel_avg           = {0, 0};
-        float     neighboring_boids = 0;
-        for (const auto& other_boid : flock)
+        glm::vec2 vel_avg           = {0, 0}; // On créé un vecteur pour la moyenne des vitesses des boids voisins
+        float     neighboring_boids = 0;      // On créé un compteur pour les boids voisins
+        for (const auto& other_boid : flock)  // Pour chaque boid voisin
         {
-            if (&boid == &other_boid)
-                continue;
+            if (&boid == &other_boid) //    Si le boid est lui-même
+                continue;             // On passe au suivant
 
-            const float distance = glm::distance(boid.getPos(), other_boid.getPos());
-            if (distance < visible_range)
+            const float distance = glm::distance(boid.getPos(), other_boid.getPos()); // On calcule la distance entre les deux boids
+            if (distance < visible_range)                                             // Si la distance est inférieure à la portée de vision
             {
-                vel_avg.x += other_boid.getVel().x;
-                vel_avg.y += other_boid.getVel().y;
-                neighboring_boids += 1;
+                vel_avg.x += other_boid.getVel().x; // On ajoute la vitesse du boid voisin à la moyenne
+                vel_avg.y += other_boid.getVel().y; // On ajoute la vitesse du boid voisin à la moyenne
+                neighboring_boids += 1;             // On incrémente le compteur de boids voisins
             }
         }
-        if (neighboring_boids > 0)
+        if (neighboring_boids > 0) // Si il y a des boids voisins
         {
-            vel_avg.x = vel_avg.x / neighboring_boids;
-            vel_avg.y = vel_avg.y / neighboring_boids;
-            glm::vec2 newVel;
-            newVel.x = boid.getVel().x + (vel_avg.x - boid.getVel().x) * matching_factor;
-            newVel.y = boid.getVel().y + (vel_avg.y - boid.getVel().y) * matching_factor;
-            boid.changeVelocity(newVel);
+            vel_avg.x = vel_avg.x / neighboring_boids;                                                      // On divise la somme des vitesses par le nombre de boids voisins
+            vel_avg.y = vel_avg.y / neighboring_boids;                                                      // On divise la somme des vitesses par le nombre de boids voisins
+            glm::vec2 newVel;                                                                               // On créé un nouveau vecteur de vitesse
+            newVel.x = boid.getVel().x + static_cast<float>(vel_avg.x - boid.getVel().x) * matching_factor; // On ajoute la différence entre la vitesse moyenne et la vitesse actuelle au vecteur de vitesse
+            newVel.y = boid.getVel().y + static_cast<float>(vel_avg.y - boid.getVel().y) * matching_factor; // On ajoute la différence entre la vitesse moyenne et la vitesse actuelle au vecteur de vitesse
+            boid.changeVelocity(newVel);                                                                    // On change la vitesse du boid
         }
     }
 }

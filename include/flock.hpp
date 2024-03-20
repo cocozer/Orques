@@ -13,7 +13,7 @@ private:
     double            centering_factor{0.0};
     double            turn_factor{0.0005};
     double            protected_range{0.1};
-    double            visible_range{0.0};
+    double            visible_range{0.3};
     double            min_speed{0.005};
     double            max_speed{0.01};
 

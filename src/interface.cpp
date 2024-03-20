@@ -3,7 +3,7 @@
 #include "glm/gtc/type_ptr.hpp"
 
 Interface::Interface()
-    : ctx{{1280, 720, "Cher ImGui"}}, rayon_carre(0.9f), position_cercle(0, 0), nombre_boids(10), taille_boids(0.03f), separation(0.01f), protected_range(0.1), alignement(1.0f), cohesion(1.0f), average_speed(0.01), turning_factor(0.01), texte("Test")
+    : ctx{{1280, 720, "Cher ImGui"}}, rayon_carre(0.9f), position_cercle(0, 0), nombre_boids(10), taille_boids(0.03f), separation(0.01f), protected_range(0.1), alignement(0.05f), cohesion(0.001f), average_speed(0.01), turning_factor(0.01), texte("Test")
 {
     ctx.imgui = [&]() {
         // Affiche une fenêtre simple
@@ -30,12 +30,12 @@ Interface::Interface()
         {
             flock.setProtectedRange(protected_range);
         }
-        ImGui::SliderFloat("Alignement", &alignement, 0, 5.0f);
+        ImGui::SliderFloat("Alignement", &alignement, 0, 0.05f);
         if (ImGui::IsItemEdited())
         {
             flock.setAlignement(alignement);
         }
-        ImGui::SliderFloat("Cohésion", &cohesion, 0, 5.0f);
+        ImGui::SliderFloat("Cohésion", &cohesion, 0, 0.005f);
         if (ImGui::IsItemEdited())
         {
             flock.setCohesion(cohesion);
