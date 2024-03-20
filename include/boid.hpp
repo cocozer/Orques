@@ -16,6 +16,7 @@ public:
     Boid();                                                                 // Default constructor
     Boid(const float& x, const float& y);                                   // Constructor by position
     Boid(const float& x, const float& y, const float& vx, const float& vy); // Constructor by position and velocity
+    explicit Boid(bool isPredator);
 
     explicit Boid(float aspectRatio);      // brief constructor random & param aspectRatio window ratio
     void drawBoid(p6::Context& ctx) const; // brief draw boid in p6 window & param ctx the p6 context of creation
@@ -24,6 +25,7 @@ public:
     glm::vec2 getVel() const;
     float     getSize() const;
     void      setSize(float newSize);
+    void      setIsPredator(bool isPredator);
     void      updatePosition();
     void      changeVelocity(glm::vec2 newVelocity);
     void      clampSpeed(double max_speed, double min_speed);

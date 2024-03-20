@@ -55,6 +55,10 @@ Interface::Interface()
         if (ImGui::IsItemEdited())
         {
             flock.setAvoidPredator(fear_predator);
+            for (const Boid& boid : flock.GetAllBoids())
+            {
+                std::cout << "Boid: " << (boid.getIsPredator() ? "Predator" : "Not Predator") << '\n';
+            }
         }
         ImGui::InputText("Texte", &texte);
 
@@ -78,10 +82,13 @@ Interface::Interface()
 
 void Interface::run_update_loop()
 {
-    flock = boids::Flock(50);
+    setNumberOfBoids(20);
     ctx.start();
 }
 void Interface::setNumberOfBoids(int num)
 {
     flock = boids::Flock(num);
+    Boid predator;
+    predator.setIsPredator(true);
+    flock.AddBoid(predator);
 }

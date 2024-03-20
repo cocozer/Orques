@@ -3,20 +3,26 @@
 #include "random.hpp"
 
 Boid::Boid()
-    : size(0.02), pos(0.0, 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025)
+    : size(0.02), pos(0.0, 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), isPredator(false)
 {}
 
 Boid::Boid(const float& x, const float& y)
-    : size(0.02), pos(x, y), velocity(0.0, 0.0)
+    : size(0.02), pos(x, y), velocity(0.0, 0.0), isPredator(false)
 {}
 
 Boid::Boid(float aspectRatio)
-    : size(0.2), pos(p6::random::number(-aspectRatio, aspectRatio), p6::random::number(-1, 1)), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025)
+    : size(0.2), pos(p6::random::number(-aspectRatio, aspectRatio), p6::random::number(-1, 1)), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), isPredator(false)
 {
 }
-
+Boid::Boid(bool isPredator)
+    : size(0.02), pos(0.0, 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), isPredator(isPredator)
+{}
 void Boid::drawBoid(p6::Context& ctx) const
 {
+    if (getIsPredator())
+    {
+        ctx.use_stroke = true;
+    }
     ctx.circle(p6::Center{this->pos.x, this->pos.y}, p6::Radius(this->size));
     ctx.use_stroke = false;
 }
@@ -43,6 +49,11 @@ float Boid::getSize() const
 void Boid::setSize(float newSize)
 {
     size = newSize;
+}
+
+void Boid::setIsPredator(bool isPredator)
+{
+    Boid::isPredator = isPredator;
 }
 
 void Boid::updatePosition()
