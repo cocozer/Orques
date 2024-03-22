@@ -86,7 +86,11 @@ void Flock::MoveRandomly()
 {
     for (auto& boid : flock)
     {
-        const glm::vec2 newVel = {randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025};
+        const glm::vec3 newVel = {
+            randgen::Rand01() / 200 - 0.0025,
+            randgen::Rand01() / 200 - 0.0025,
+            randgen::Rand01() / 200 - 0.0025
+        };
         boid.changeVelocity(newVel);
     }
 }
@@ -95,7 +99,7 @@ void Flock::Separation()
 {
     for (auto& boid : flock)
     {
-        glm::vec2 close_d = {0, 0};
+        glm::vec3 close_d = {0, 0, 0};
         for (const auto& other_boid : flock)
         {
             if (&boid == &other_boid)
@@ -106,54 +110,60 @@ void Flock::Separation()
             {
                 close_d.x += boid.getPos().x - other_boid.getPos().x;
                 close_d.y += boid.getPos().y - other_boid.getPos().y;
+                close_d.z += boid.getPos().z - other_boid.getPos().z;
             }
         }
 
-        glm::vec2 newVel;
+        glm::vec3 newVel;
         newVel.x = boid.getVel().x + (close_d.x * avoid_factor);
         newVel.y = boid.getVel().y + (close_d.y * avoid_factor);
+        newVel.z = boid.getVel().z + (close_d.z * avoid_factor);
         boid.changeVelocity(newVel);
     }
 }
 
 void Flock::Alignment()
 {
-    for (auto& boid : flock) // Pour chaque boid
+    for (auto& boid : flock)
     {
-        glm::vec2 vel_avg           = {0, 0}; // On créé un vecteur pour la moyenne des vitesses des boids voisins
-        float     neighboring_boids = 0;      // On créé un compteur pour les boids voisins
-        for (const auto& other_boid : flock)  // Pour chaque boid voisin
+        glm::vec3 vel_avg           = {0, 0, 0};
+        float     neighboring_boids = 0;
+        for (const auto& other_boid : flock)
         {
-            if (&boid == &other_boid) //    Si le boid est lui-même
-                continue;             // On passe au suivant
+            if (&boid == &other_boid)
+                continue;
 
-            const float distance = glm::distance(boid.getPos(), other_boid.getPos()); // On calcule la distance entre les deux boids
-            if (distance < visible_range)                                             // Si la distance est inférieure à la portée de vision
+            const float distance = glm::distance(boid.getPos(), other_boid.getPos());
+            if (distance < visible_range)
             {
-                vel_avg.x += other_boid.getVel().x; // On ajoute la vitesse du boid voisin à la moyenne
-                vel_avg.y += other_boid.getVel().y; // On ajoute la vitesse du boid voisin à la moyenne
-                neighboring_boids += 1;             // On incrémente le compteur de boids voisins
+                vel_avg.x += other_boid.getVel().x;
+                vel_avg.y += other_boid.getVel().y;
+                vel_avg.z += other_boid.getVel().z;
+                neighboring_boids += 1;
             }
         }
-        if (neighboring_boids > 0) // Si il y a des boids voisins
+        if (neighboring_boids > 0)
         {
-            vel_avg.x = vel_avg.x / neighboring_boids;                                                      // On divise la somme des vitesses par le nombre de boids voisins
-            vel_avg.y = vel_avg.y / neighboring_boids;                                                      // On divise la somme des vitesses par le nombre de boids voisins
-            glm::vec2 newVel;                                                                               // On créé un nouveau vecteur de vitesse
-            newVel.x = boid.getVel().x + static_cast<float>(vel_avg.x - boid.getVel().x) * matching_factor; // On ajoute la différence entre la vitesse moyenne et la vitesse actuelle au vecteur de vitesse
-            newVel.y = boid.getVel().y + static_cast<float>(vel_avg.y - boid.getVel().y) * matching_factor; // On ajoute la différence entre la vitesse moyenne et la vitesse actuelle au vecteur de vitesse
-            boid.changeVelocity(newVel);                                                                    // On change la vitesse du boid
+            vel_avg.x /= neighboring_boids;
+            vel_avg.y /= neighboring_boids;
+            vel_avg.z /= neighboring_boids;
+
+            glm::vec3 newVel;
+            newVel.x = boid.getVel().x + (vel_avg.x - boid.getVel().x) * matching_factor;
+            newVel.y = boid.getVel().y + (vel_avg.y - boid.getVel().y) * matching_factor;
+            newVel.z = boid.getVel().z + (vel_avg.z - boid.getVel().z) * matching_factor;
+
+            boid.changeVelocity(newVel);
         }
     }
 }
-
 void Flock::Cohesion()
 {
     for (auto& boid : flock)
     {
-        glm::vec2 pos_avg           = {0, 0};
+        glm::vec3 pos_avg           = {0, 0, 0};
         float     neighboring_boids = 0;
-        for (auto& other_boid : flock)
+        for (const auto& other_boid : flock)
         {
             if (&boid != &other_boid)
             {
@@ -162,17 +172,22 @@ void Flock::Cohesion()
                 {
                     pos_avg.x += other_boid.getPos().x;
                     pos_avg.y += other_boid.getPos().y;
+                    pos_avg.z += other_boid.getPos().z;
                     neighboring_boids += 1;
                 }
             }
         }
         if (neighboring_boids > 0)
         {
-            pos_avg.x = pos_avg.x / neighboring_boids;
-            pos_avg.y = pos_avg.y / neighboring_boids;
-            glm::vec2 newVel;
+            pos_avg.x /= neighboring_boids;
+            pos_avg.y /= neighboring_boids;
+            pos_avg.z /= neighboring_boids;
+
+            glm::vec3 newVel;
             newVel.x = boid.getVel().x + (pos_avg.x - boid.getPos().x) * centering_factor;
             newVel.y = boid.getVel().y + (pos_avg.y - boid.getPos().y) * centering_factor;
+            newVel.z = boid.getVel().z + (pos_avg.z - boid.getPos().z) * centering_factor;
+
             boid.changeVelocity(newVel);
         }
     }
@@ -276,8 +291,8 @@ void Flock::avoidPredators()
                 float distance = glm::distance(boid.getPos(), other_boid.getPos());
                 if (distance < visible_range)
                 {
-                    glm::vec2 avoid_d = boid.getPos() - other_boid.getPos();
-                    glm::vec2 newVel  = boid.getVel() + (avoid_d * glm::vec2(static_cast<float>(fear_predator)));
+                    glm::vec3 avoid_d = boid.getPos() - other_boid.getPos();
+                    glm::vec3 newVel  = boid.getVel() + (avoid_d * static_cast<float>(fear_predator));
                     boid.changeVelocity(newVel);
                 }
             }

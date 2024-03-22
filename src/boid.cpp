@@ -3,19 +3,19 @@
 #include "random.hpp"
 
 Boid::Boid()
-    : size(0.02), pos(0.0, 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), isPredator(false)
+    : size(0.02), pos(0.0, 0.0, 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), isPredator(false)
 {}
 
-Boid::Boid(const float& x, const float& y)
-    : size(0.02), pos(x, y), velocity(0.0, 0.0), isPredator(false)
+Boid::Boid(const float& x, const float& y, const float& z)
+    : size(0.02), pos(x, y, z), velocity(0.0, 0.0, 0.0), isPredator(false)
 {}
 
 Boid::Boid(float aspectRatio)
-    : size(0.2), pos(p6::random::number(-aspectRatio, aspectRatio), p6::random::number(-1, 1)), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), isPredator(false)
+    : size(0.2), pos(p6::random::number(-aspectRatio, aspectRatio), p6::random::number(-1, 1), 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), isPredator(false)
 {
 }
 Boid::Boid(bool isPredator)
-    : size(0.02), pos(0.0, 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), isPredator(isPredator)
+    : size(0.02), pos(0.0, 0.0, 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), isPredator(isPredator)
 {}
 void Boid::drawBoid(p6::Context& ctx) const
 {
@@ -27,16 +27,16 @@ void Boid::drawBoid(p6::Context& ctx) const
     ctx.use_stroke = false;
 }
 
-Boid::Boid(const float& x, const float& y, const float& vx, const float& vy)
-    : size(0.02), pos(x, y), velocity(vx, vy)
+Boid::Boid(const float& x, const float& y, const float& z, const float& vx, const float& vy, const float& vz)
+    : size(0.02), pos(x, y, z), velocity(vx, vy, vz)
 {}
 
-glm::vec2 Boid::getPos() const
+glm::vec3 Boid::getPos() const
 {
     return pos;
 }
 
-glm::vec2 Boid::getVel() const
+glm::vec3 Boid::getVel() const
 {
     return velocity;
 }
@@ -60,26 +60,26 @@ void Boid::updatePosition()
 {
     pos += velocity;
 }
-void Boid::changeVelocity(glm::vec2 newVelocity)
+
+void Boid::changeVelocity(glm::vec3 newVelocity)
 {
     velocity = newVelocity;
 }
 
 void Boid::clampSpeed(double max_speed, double min_speed)
 {
-    float currentSpeed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+    float currentSpeed = glm::length(velocity);
 
     if (currentSpeed > max_speed)
     {
-        velocity.x = (velocity.x / currentSpeed) * max_speed;
-        velocity.y = (velocity.y / currentSpeed) * max_speed;
+        velocity = glm::normalize(velocity) * static_cast<float>(max_speed);
     }
     else if (currentSpeed < min_speed)
     {
-        velocity.x = (velocity.x / currentSpeed) * min_speed;
-        velocity.y = (velocity.y / currentSpeed) * min_speed;
+        velocity = glm::normalize(velocity) * static_cast<float>(min_speed);
     }
 }
+
 void Boid::checkOverflow(float limit, float turnfactor)
 {
     if (pos.x < -limit + 2 * size)
@@ -99,6 +99,7 @@ void Boid::checkOverflow(float limit, float turnfactor)
         velocity.y += turnfactor;
     }
 }
+
 bool Boid::getIsPredator() const
 {
     return isPredator;
