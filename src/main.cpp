@@ -1,26 +1,21 @@
-#include <cstdlib>
 #define DOCTEST_CONFIG_IMPLEMENT
+#include <p6/p6.h>
+#include <interface.hpp>
 #include "doctest/doctest.h"
-#include "p6/p6.h"
+
+// #define TINYOBJLOADER_IMPLEMENTATION
+// #include <tiny_obj_loader.h>
 
 int main()
 {
-    // Run the tests
-    if (doctest::Context{}.run() != 0)
-        return EXIT_FAILURE;
+    Interface interface; // on créé l'objet interface de la classe Interface
 
-    // Actual application code
-    auto ctx = p6::Context{{.title = "Simple-p6-Setup"}};
-    ctx.maximize_window();
-    // Declare your infinite update loop.
-    ctx.update = [&]() {
-        ctx.background(p6::NamedColor::PinkLace);
-        ctx.circle(
-            p6::Center{ctx.mouse()},
-            p6::Radius{0.7f}
-        );
-    };
+    // passer un model 3d a run update loop
+    // ici definir model (shader, mv matrix etc et obj 3d)
 
-    // Should be done last. It starts the infinite loop.
-    ctx.start();
+    // load shader (creer shader vs fs)
+    //     p6::Shader Shader = p6::load_shader("shaders/3D.vs.glsl", "shaders/text3D.fs.glsl");
+
+    interface.run_update_loop();
+    return 0;
 }
