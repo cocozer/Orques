@@ -1,4 +1,7 @@
 #include "boid.hpp"
+#include "glm/fwd.hpp"
+#include "glm/geometric.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "p6/p6.h"
 #include "random.hpp"
 
@@ -25,6 +28,17 @@ void Boid::drawBoid(p6::Context& ctx) const
     }
     ctx.circle(p6::Center{this->pos.x, this->pos.y}, p6::Radius(this->size));
     ctx.use_stroke = false;
+}
+void Boid::drawBoid3D(glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uMVPMatrix, GLint uMVMatrix, GLint uNormalMatrix, glm::mat4 viewMatrix) const
+{
+    glm::mat4 MVMatrixBoids = glm::translate(glm::mat4{1.f}, {0.f, 0.f, -3.f}); // Translation
+    MVMatrixBoids           = glm::translate(MVMatrixBoids, getPos());          // Translation * Rotation * Translation
+
+    MVMatrixBoids = glm::scale(MVMatrixBoids, glm::vec3{getSize()}); // Translation * Rotation * Translation * Scale
+    MVMatrixBoids = viewMatrix * MVMatrixBoids;
+    glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrixBoids));
+    glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrixBoids));
+    glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 }
 
 Boid::Boid(const float& x, const float& y, const float& z, const float& vx, const float& vy, const float& vz)
