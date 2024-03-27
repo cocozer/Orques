@@ -104,7 +104,7 @@ void Model::loadModel(const std::string& fileName)
             {
                 tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
                 // access to vertex
-                glimac::ShapeVertex newVertex = glimac::ShapeVertex(
+                glimac::ShapeVertex newVertex = glimac::ShapeVertex{
 
                     // POSITION
                     glm::vec3(
@@ -125,7 +125,7 @@ void Model::loadModel(const std::string& fileName)
                         tinyobj::real_t(attrib.texcoords[2 * size_t(idx.texcoord_index) + 0]), // tx
                         tinyobj::real_t(attrib.texcoords[2 * size_t(idx.texcoord_index) + 1])  // ty
                     )
-                );
+                } ;
 
                 m_vertices.push_back(newVertex);
             }
