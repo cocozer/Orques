@@ -10,5 +10,6 @@
 namespace randgen {
 
 double Rand01();
+double Poisson(double lambda);
 
 }
