@@ -7,9 +7,8 @@ project(Simple-p6-Setup)
 # ---Declare source files---
 file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS src/*)
 file(GLOB_RECURSE COMMON_FILES CONFIGURE_DEPENDS src-common/*)
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_include_directories(${PROJECT_NAME} PRIVATE include src) 
-target_include_directories(${PROJECT_NAME} PRIVATE include src-common)
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${COMMON_FILES})
+target_include_directories(${PROJECT_NAME} PRIVATE include src src-common)
 
 # ---Add tinyobjloader library---
 add_subdirectory(tinyobjloader)
