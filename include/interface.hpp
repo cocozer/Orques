@@ -9,11 +9,11 @@ class Interface {
 public:
     Interface(); // constructeur
 
-    void run_update_loop(); // fonction qui affiche l'interface graphique
-    void setNumberOfBoids(int num);
+    void        run_update_loop(); // fonction qui affiche l'interface graphique
+    void        setNumberOfBoids(int num);
+    p6::Context ctx;
 
 private: // on déclare les variables membres de la classe Interface
-    p6::Context  ctx;
     float        rayon_carre;
     glm::vec3    position_cercle;
     int          nombre_boids;

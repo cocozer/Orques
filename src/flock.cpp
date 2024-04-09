@@ -1,5 +1,6 @@
 #include "flock.hpp"
 #include <cassert>
+#include <test_sphere.hpp>
 #include "glm/fwd.hpp"
 #include "random.hpp"
 
@@ -26,6 +27,7 @@ void Flock::drawFlock(p6::Context& ctx) const
     {
         boid.drawBoid(ctx);
     }
+    sphere();
 } // brief draw boid in p6 window & param ctx the p6 context of creation
 
 void Flock::AddBoid(const Boid& boid)
