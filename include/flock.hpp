@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "boid.hpp"
+#include "test_sphere.hpp"
 
 namespace boids {
 

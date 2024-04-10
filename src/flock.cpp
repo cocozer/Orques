@@ -1,8 +1,8 @@
 #include "flock.hpp"
 #include <cassert>
-#include <test_sphere.hpp>
 #include "glm/fwd.hpp"
 #include "random.hpp"
+#include "test_sphere.hpp"
 
 namespace boids {
 
@@ -55,7 +55,7 @@ const Boid& Flock::GetBoid(int index)
 
 void Flock::assert_index_is_valid(int index)
 {
-    if (index < 0 || index > static_cast<int>(flock.size()))
+    if (index < 0 || index >= static_cast<int>(flock.size()))
     {
         assert(false);
     }
@@ -276,7 +276,7 @@ void Flock::setTurningFactor(float factor)
 }
 void Flock::setAvoidPredator(float fear_predator)
 {
-    fear_predator = static_cast<double>(fear_predator);
+    this->fear_predator = static_cast<double>(fear_predator);
 }
 
 void Flock::avoidPredators()
@@ -301,4 +301,5 @@ void Flock::avoidPredators()
         }
     }
 }
+
 } // namespace boids

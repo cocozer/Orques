@@ -15,7 +15,7 @@ int sphere()
      *********************************/
 
     // Load shaders
-    p6::Shader Shader = p6::load_shader("shaders/3D.vs.glsl", "shaders/text3D.fs.glsl");
+    p6::Shader Shader = p6::load_shader("shaders/3D.vs.glsl", "shaders/normal.fs.glsl");
 
     // Get uniform variables
     GLint uMVPMatrix    = glGetUniformLocation(Shader.id(), "uMVPMatrix");
@@ -30,6 +30,8 @@ int sphere()
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glimac::ShapeVertex), vertices.data(), GL_STATIC_DRAW);
+
+    // glEnable(GL_DEPTH_TEST);
 
     // Create VAO
     GLuint vao = 0;
