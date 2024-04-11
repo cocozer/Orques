@@ -15,7 +15,7 @@ int sphere()
      *********************************/
 
     // Load shaders
-    p6::Shader Shader = p6::load_shader("shaders/3D.vs.glsl", "shaders/normal.fs.glsl");
+    p6::Shader Shader = p6::load_shader("../shaders/3D.vs.glsl", "../shaders/normal.fs.glsl");
 
     // Get uniform variables
     GLint uMVPMatrix    = glGetUniformLocation(Shader.id(), "uMVPMatrix");
