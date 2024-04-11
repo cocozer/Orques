@@ -27,8 +27,17 @@ void Flock::drawFlock(p6::Context& ctx) const
     {
         boid.drawBoid(ctx);
     }
-    sphere();
+    // sphere(ctx);
 } // brief draw boid in p6 window & param ctx the p6 context of creation
+
+void Flock::drawFlock3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, int verticesSize) const
+{
+    for (const Boid& boid : flock)
+    {
+        boid.drawBoid3D(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, verticesSize);
+    }
+    // sphere(ctx);
+}
 
 void Flock::AddBoid(const Boid& boid)
 {

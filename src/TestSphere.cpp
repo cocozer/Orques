@@ -8,81 +8,77 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "p6/p6.h"
 
-int sphere()
+int sphere_init(p6::Context& ctx)
 {
     /*********************************
      * INITIALIZATION CODE
      *********************************/
 
     // Load shaders
-    p6::Shader Shader = p6::load_shader("../shaders/3D.vs.glsl", "../shaders/normal.fs.glsl");
+    const p6::Shader shader = p6::load_shader("../shaders/3D.vs.glsl", "../shaders/normal.fs.glsl");
 
-    // Get uniform variables
-    GLint uMVPMatrix    = glGetUniformLocation(Shader.id(), "uMVPMatrix");
-    GLint uMVMatrix     = glGetUniformLocation(Shader.id(), "uMVMatrix");
-    GLint uNormalMatrix = glGetUniformLocation(Shader.id(), "uNormalMatrix");
+    const std::vector<glimac::ShapeVertex> vertices = glimac::sphere_vertices(1.f, 32, 16); // création des vertices de la sphere
 
-    // Create the shape (sphere)
-    const std::vector<glimac::ShapeVertex> vertices = glimac::sphere_vertices(1.f, 32, 16);
-
-    // Create VBO
-    GLuint vbo = 0;
+    GLuint vbo;
     glGenBuffers(1, &vbo);
+
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glimac::ShapeVertex), vertices.data(), GL_STATIC_DRAW);
 
-    // glEnable(GL_DEPTH_TEST);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<int>(vertices.size() * sizeof(glimac::ShapeVertex)), vertices.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    // Create VAO
     GLuint vao = 0;
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
+    static constexpr GLuint vertex_attr_position = 0;
+    glEnableVertexAttribArray(vertex_attr_position);
+    static constexpr GLuint vertex_attr_normal = 1;
+    glEnableVertexAttribArray(vertex_attr_normal);
+    static constexpr GLuint vertex_attr_color = 2;
+    glEnableVertexAttribArray(vertex_attr_color);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glVertexAttribPointer(vertex_attr_position, 3, GL_FLOAT, GL_FALSE, sizeof(glimac::ShapeVertex), (const GLvoid*)offsetof(glimac::ShapeVertex, position)); // attributs position : 3 coordonnées
+    glVertexAttribPointer(vertex_attr_normal, 3, GL_FLOAT, GL_FALSE, sizeof(glimac::ShapeVertex), (const GLvoid*)offsetof(glimac::ShapeVertex, normal));
+    glVertexAttribPointer(vertex_attr_color, 2, GL_FLOAT, GL_FALSE, sizeof(glimac::ShapeVertex), (const GLvoid*)offsetof(glimac::ShapeVertex, texCoords));
 
-    const GLuint VERTEX_ATTR_POSITION = 0;
-    const GLuint VERTEX_ATTR_NORM     = 1;
-    const GLuint VERTEX_ATTR_UV       = 2;
-    glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
-    glEnableVertexAttribArray(VERTEX_ATTR_NORM);
-    glEnableVertexAttribArray(VERTEX_ATTR_UV);
-
-    glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(glimac::ShapeVertex), (const GLvoid*)(offsetof(glimac::ShapeVertex, position)));
-    glVertexAttribPointer(VERTEX_ATTR_NORM, 3, GL_FLOAT, GL_FALSE, sizeof(glimac::ShapeVertex), (const GLvoid*)(offsetof(glimac::ShapeVertex, normal)));
-    glVertexAttribPointer(VERTEX_ATTR_UV, 2, GL_FLOAT, GL_FALSE, sizeof(glimac::ShapeVertex), (const GLvoid*)(offsetof(glimac::ShapeVertex, texCoords)));
-
-    // Unbind VBO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    // Unbind VAO
     glBindVertexArray(0);
 
-    // Calculate necessary matrices for shaders
-    glm::mat4 ProjMatrix = glm::perspective(glm::radians(70.f), 16.f / 9.f, 0.1f, 100.f);
-    glm::mat4 MVMatrix;
-    glm::mat4 NormalMatrix;
+    ctx.update = [&]() {
+        /*********************************
+         * HERE SHOULD COME THE RENDERING CODE
+         *********************************/
 
-    /* Rendering code */
-    Shader.use();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        shader.use();
+        glEnable(GL_DEPTH_TEST);
+        // recuperation des matrices du shader
+        GLint uMVPMatrix    = glGetUniformLocation(shader.id(), "uMVPMatrix");
+        GLint uMVMatrix     = glGetUniformLocation(shader.id(), "uMVMatrix");
+        GLint uNormalMatrix = glGetUniformLocation(shader.id(), "uNormalMatrix");
 
-    // Render the sphere
-    MVMatrix     = glm::translate(glm::mat4(1.0), glm::vec3(0., 0., -5.));
-    MVMatrix     = glm::rotate(MVMatrix, 0.f, glm::vec3(0, 1, 0));
-    NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
+        glm::mat4 ProjMatrix = glm::perspective(glm::radians(70.f), 16.f / 9.f, 0.1f, 100.f);
+        glm::mat4 MVMatrix;
+        glm::mat4 NormalMatrix;
 
-    glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-    glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-    glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+        MVMatrix     = glm::translate(glm::mat4(1.0), glm::vec3(0., 0., -5.));
+        MVMatrix     = glm::rotate(MVMatrix, 0.f, glm::vec3(0, 1, 0));
+        NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 
-    // Bind VAO
-    glBindVertexArray(vao);
+        // envoi des matrices vers le GPU
+        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
-    // Render the sphere
-    glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+        glBindVertexArray(vao);
+        glDrawArrays(GL_TRIANGLES, 0, static_cast<int>(vertices.size()));
 
-    // Unbind VAO
-    glBindVertexArray(0);
-    glBindTexture(GL_TEXTURE_2D, 0);
+        glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    };
 
-    // Delete buffers
+    // Should be done last. It starts the infinite loop.
+    ctx.start();
     glDeleteBuffers(1, &vbo);
     glDeleteVertexArrays(1, &vao);
 

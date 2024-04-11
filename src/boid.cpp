@@ -29,16 +29,16 @@ void Boid::drawBoid(p6::Context& ctx) const
     ctx.circle(p6::Center{this->pos.x, this->pos.y}, p6::Radius(this->size));
     ctx.use_stroke = false;
 }
-void Boid::drawBoid3D(glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uMVPMatrix, GLint uMVMatrix, GLint uNormalMatrix, glm::mat4 viewMatrix) const
+void Boid::drawBoid3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, int verticesSize) const
 {
-    glm::mat4 MVMatrixBoids = glm::translate(glm::mat4{1.f}, {0.f, 0.f, -3.f}); // Translation
-    MVMatrixBoids           = glm::translate(MVMatrixBoids, getPos());          // Translation * Rotation * Translation
-
-    MVMatrixBoids = glm::scale(MVMatrixBoids, glm::vec3{getSize()}); // Translation * Rotation * Translation * Scale
-    MVMatrixBoids = viewMatrix * MVMatrixBoids;
-    glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrixBoids));
-    glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrixBoids));
+    glm::vec3 position = glm::vec3(getPos().x, getPos().y, getPos().z - 1); // Set the position of each sphere
+    MVMatrix           = glm::translate(glm::mat4{1.f}, position);          // Translate the model matrix to the position
+    MVMatrix           = glm::scale(MVMatrix, glm::vec3(getSize()));        // Scale the model matrix to the size of the sphere
+    glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+    glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
     glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+
+    glDrawArrays(GL_TRIANGLES, 0, verticesSize);
 }
 
 Boid::Boid(const float& x, const float& y, const float& z, const float& vx, const float& vy, const float& vz)
