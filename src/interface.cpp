@@ -130,7 +130,7 @@ Interface::Interface()
         glm::mat4 MVMatrix;
         glm::mat4 NormalMatrix;
 
-        MVMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0., 0., -10.));
+        MVMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0., 0., 0.));
         // MVMatrix     = glm::rotate(MVMatrix, 0.f, glm::vec3(0, 1, 0));
         NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 

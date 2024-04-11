@@ -112,6 +112,14 @@ void Boid::checkOverflow(float limit, float turnfactor)
     {
         velocity.y += turnfactor;
     }
+    if (pos.z > limit - 2 * size)
+    {
+        velocity.z -= turnfactor;
+    }
+    if (pos.z < -limit + 2 * size)
+    {
+        velocity.z += turnfactor;
+    }
 }
 
 bool Boid::getIsPredator() const
