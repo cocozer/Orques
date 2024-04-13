@@ -71,7 +71,7 @@ const int* Model::getIndexPointer() const
 void Model::loadModel(const std::string& fileName)
 {
     // Load 3D object
-    std::string                      inputfile = "assets/models/" + fileName;
+    std::string                      inputfile = "../assets/models/" + fileName;
     tinyobj::attrib_t                attrib;
     std::vector<tinyobj::shape_t>    shapes;
     std::vector<tinyobj::material_t> materials;
@@ -125,7 +125,7 @@ void Model::loadModel(const std::string& fileName)
                         tinyobj::real_t(attrib.texcoords[2 * size_t(idx.texcoord_index) + 0]), // tx
                         tinyobj::real_t(attrib.texcoords[2 * size_t(idx.texcoord_index) + 1])  // ty
                     )
-                } ;
+                };
 
                 m_vertices.push_back(newVertex);
             }
