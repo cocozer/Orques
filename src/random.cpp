@@ -29,10 +29,8 @@ double Normale(double esperance, double ecarttype) // renvoie un double selon la
 {
     double u1     = Rand01();
     double u2     = Rand01();
-    double M_PI   = 3.14159265358979323846;
     double z1     = sqrt(-2 * log(u1)) * cos(2 * M_PI * u2);
     double sample = esperance + ecarttype * z1;
     return sample;
 }
-
 } // namespace randgen
