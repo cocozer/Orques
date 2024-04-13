@@ -21,7 +21,7 @@ private:
 
 public:
     // Flock();
-    Flock(int n = 5);                                                                // Constructeur pour créer n boids
+    Flock(int n = 10);                                                               // Constructeur pour créer n boids
     Flock(int n, float avoid_factor, float matching_factor, float centering_factor); // Constructeur pour créer n boids avec un facteur d'évitement de "avoid_factor"
 
     void drawFlock(p6::Context& ctx) const;                                                                                                                             // brief draw boid in p6 window & param ctx the p6 context of creation
