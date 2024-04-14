@@ -15,21 +15,20 @@ int UniformeInt(int min, int max)
 // renvoie un nombre d'évenement selon une loi uniforme, avec en
 // paramètres les bornes de l'intervalle choisis par l'utilisateur (entier)
 {
-  max++;
-  int n1 = max - min;
-  int n2 = n1 * Rand01();
-  int n3 = n2 + min;
-  return n3;
+    int n1 = max - min + 1; // +1 pour inclure la borne max
+    int n2 = n1 * Rand01();
+    int n3 = n2 + min;
+    return n3;
 }
 
 double UniformeDouble(double min, double max)
 // renvoie un nombre d'évenement selon une loi uniforme, avec en
 // paramètres les bornes de l'intervalle choisis par l'utilisateur (entier)
 {
-  double n1 = max - min;
-  double n2 = n1 * Rand01();
-  double n3 = n2 + min;
-  return n3;
+    double n1 = max - min;
+    double n2 = n1 * Rand01();
+    double n3 = n2 + min;
+    return n3;
 }
 
 int Poisson(double lambda) // renvoie un nombre d'évenement selon une loi de Poisson (parametre lambda = nombre moyen d'évènement par intervalle de temps)
