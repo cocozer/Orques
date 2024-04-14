@@ -10,6 +10,9 @@
 namespace randgen {
 
 double Rand01();
-double Poisson(double lambda);
+int UniformeDouble(int min, int max);
+double UniformeDouble(double min, double max);
+int Poisson(double lambda);
+double Normale(double esperance, double ecarttype);
 
 }
