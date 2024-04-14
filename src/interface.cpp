@@ -12,6 +12,7 @@
 #include "p6/p6.h"
 #include "tiny_obj_loader.h"
 
+// blalalalalallalall
 Interface::Interface()
     : ctx{{1280, 720, "Cher ImGui"}}, rayon_carre(0.3f), position_cercle(0, 0, 0), nombre_boids(10), taille_boids(0.03f), separation(0.01f), protected_range(0.1), alignement(0.05f), cohesion(0.001f), average_speed(0.01), turning_factor(0.01), fear_predator(0.001f), texte("Test")
 {

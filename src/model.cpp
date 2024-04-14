@@ -1,7 +1,7 @@
 #include "model.hpp"
 #include <glimac/common.hpp>
-
-// let's go utiliser la librairie tinyobj
+// blalalallala
+//  let's go utiliser la librairie tinyobj
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 

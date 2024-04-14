@@ -1,5 +1,5 @@
 #version 330
-
+//blalalalala
 //variables d'entrées
 in vec3 vNormal_vs;
 

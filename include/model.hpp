@@ -3,7 +3,7 @@
 #include <glimac/common.hpp>
 #include "glm/fwd.hpp"
 #include "p6/p6.h"
-
+// blalalalala
 class Model {
 protected:
     GLuint                           m_vbo = 0;

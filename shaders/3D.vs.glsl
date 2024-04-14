@@ -1,5 +1,5 @@
 #version 330
-
+//blalalalala
 //on definie les attributs d'entree du vertex
 layout(location = 0) in vec3 aVertexPosition;
 layout(location = 1) in vec3 aVertexNormal;
