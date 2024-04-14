@@ -113,7 +113,7 @@ Interface::Interface()
     ctx.update = [&]() {
         ctx.background({1, 0.5, 0.7, 1});
         ctx.square(p6::Center{}, p6::Radius{rayon_carre});
-        // flock.Update(rayon_carre);
+        flock.Update(rayon_carre);
 
         /*********************************
          * HERE SHOULD COME THE RENDERING CODE
@@ -125,19 +125,30 @@ Interface::Interface()
 
         // on utilise le shader
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // flock.drawFlock3D(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, kw);
+        for (const Boid& boid : flock.GetAllBoids())
+        {
+            // on calcule les matrices de vue et normales
+            MVMatrix = glm::translate(glm::mat4(1.0), glm::vec3(boid.getPos().x, boid.getPos().y, boid.getPos().z - 1.));
+            MVMatrix = glm::scale(MVMatrix, glm::vec3(boid.getSize())); // Scale the model matrix to the size of the sphere
 
-        // on calcule les matrices de vue et normales
-        MVMatrix     = glm::translate(glm::mat4(1.0), glm::vec3(0., 0., -5.));
-        MVMatrix     = glm::rotate(MVMatrix, -ctx.time(), glm::vec3(0, 1, 0));
-        NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
+            // on calcule la matrice de rotation pour orienter le boid dans la direction de sa vélocité
+            glm::vec3 velocity       = boid.getVel();
+            float     angleY         = atan2(velocity.x, velocity.z);
+            glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angleY, glm::vec3(0.0f, 1.0f, 0.0f));
 
-        // on bind les matrices au shader
-        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+            // on applique la rotation à la matrice de modèle-vue
+            MVMatrix     = MVMatrix * rotationMatrix;
+            NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 
-        // on dessine notre orque
-        kw.draw();
+            // on bind les matrices au shader
+            glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+            glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+            glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+
+            // on dessine notre orque
+            kw.draw();
+        }
 
         // on debind le vao
         glBindVertexArray(0);

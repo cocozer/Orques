@@ -25,8 +25,8 @@ public:
     Flock(int n = 10);                                                               // Constructeur pour créer n boids
     Flock(int n, float avoid_factor, float matching_factor, float centering_factor); // Constructeur pour créer n boids avec un facteur d'évitement de "avoid_factor"
 
-    void drawFlock(p6::Context& ctx) const;                                                                                                                            // brief draw boid in p6 window & param ctx the p6 context of creation
-    void drawFlock3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, Model boidModel) const; // brief draw boid in p6 window & param ctx the p6 context of creation
+    void drawFlock(p6::Context& ctx) const;                                                                                                                     // brief draw boid in p6 window & param ctx the p6 context of creation
+    void drawFlock3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, Model kw) const; // brief draw boid in p6 window & param ctx the p6 context of creation
 
     // Méthodes pour manipuler le vecteur de boids
     void        AddBoid(const Boid& boid);

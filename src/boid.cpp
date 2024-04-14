@@ -29,16 +29,21 @@ void Boid::drawBoid(p6::Context& ctx) const
     ctx.circle(p6::Center{this->pos.x, this->pos.y}, p6::Radius(this->size));
     ctx.use_stroke = false;
 }
-void Boid::drawBoid3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, Model boidModel) const
+void Boid::drawBoid3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, Model kw) const
 {
-    glm::vec3 position = glm::vec3(getPos().x, getPos().y, getPos().z - 1); // Set the position of each sphere
-    MVMatrix           = glm::translate(glm::mat4{1.f}, position);          // Translate the model matrix to the position
-    MVMatrix           = glm::scale(MVMatrix, glm::vec3(getSize()));        // Scale the model matrix to the size of the sphere
+    // on calcule les matrices de vue et normales
+    MVMatrix = glm::translate(glm::mat4(1.0), glm::vec3(getPos().x, getPos().y, getPos().z - 1.));
+    // MVMatrix     = glm::rotate(MVMatrix, -ctx.time(), glm::vec3(0, 1, 0));
+    MVMatrix     = glm::scale(MVMatrix, glm::vec3(getSize())); // Scale the model matrix to the size of the sphere
+    NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
+
+    // on bind les matrices au shader
     glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
     glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
     glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
-    boidModel.draw();
+    // on dessine notre orque
+    kw.draw();
 }
 
 Boid::Boid(const float& x, const float& y, const float& z, const float& vx, const float& vy, const float& vz)
