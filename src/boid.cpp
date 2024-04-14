@@ -29,7 +29,7 @@ void Boid::drawBoid(p6::Context& ctx) const
     ctx.circle(p6::Center{this->pos.x, this->pos.y}, p6::Radius(this->size));
     ctx.use_stroke = false;
 }
-void Boid::drawBoid3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, int verticesSize) const
+void Boid::drawBoid3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, Model boidModel) const
 {
     glm::vec3 position = glm::vec3(getPos().x, getPos().y, getPos().z - 1); // Set the position of each sphere
     MVMatrix           = glm::translate(glm::mat4{1.f}, position);          // Translate the model matrix to the position
@@ -38,7 +38,7 @@ void Boid::drawBoid3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm
     glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
     glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
-    glDrawArrays(GL_TRIANGLES, 0, verticesSize);
+    boidModel.draw();
 }
 
 Boid::Boid(const float& x, const float& y, const float& z, const float& vx, const float& vy, const float& vz)

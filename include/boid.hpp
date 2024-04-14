@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "glm/glm.hpp"
+#include "model.hpp"
 #include "p6/p6.h"
 
 class Boid {
@@ -20,7 +21,7 @@ public:
 
     explicit Boid(float aspectRatio);      // brief constructor random & param aspectRatio window ratio
     void drawBoid(p6::Context& ctx) const; // brief draw boid in p6 window & param ctx the p6 context of creation
-    void drawBoid3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, int verticesSize) const;
+    void drawBoid3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, Model boidModel) const;
 
     glm::vec3 getPos() const;
     glm::vec3 getVel() const;
