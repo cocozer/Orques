@@ -29,12 +29,19 @@ void Boid::drawBoid(p6::Context& ctx) const
     ctx.circle(p6::Center{this->pos.x, this->pos.y}, p6::Radius(this->size));
     ctx.use_stroke = false;
 }
-void Boid::drawBoid3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, Model kw) const
+void Boid::drawBoid3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, const Model& kw) const
 {
     // on calcule les matrices de vue et normales
     MVMatrix = glm::translate(glm::mat4(1.0), glm::vec3(getPos().x, getPos().y, getPos().z - 1.));
-    // MVMatrix     = glm::rotate(MVMatrix, -ctx.time(), glm::vec3(0, 1, 0));
-    MVMatrix     = glm::scale(MVMatrix, glm::vec3(getSize())); // Scale the model matrix to the size of the sphere
+    MVMatrix = glm::scale(MVMatrix, glm::vec3(getSize())); // Scale the model matrix to the size of the sphere
+
+    // on calcule la matrice de rotation pour orienter le boid dans la direction de sa vélocité
+    glm::vec3 velocity       = getVel();
+    float     angleY         = atan2(velocity.x, velocity.z);
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angleY, glm::vec3(0.0f, 1.0f, 0.0f));
+
+    // on applique la rotation à la matrice de modèle-vue
+    MVMatrix     = MVMatrix * rotationMatrix;
     NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 
     // on bind les matrices au shader

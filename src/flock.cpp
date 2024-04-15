@@ -1,3 +1,4 @@
+
 #include "flock.hpp"
 #include <cassert>
 #include "glm/fwd.hpp"
@@ -30,7 +31,7 @@ void Flock::drawFlock(p6::Context& ctx) const
     // sphere(ctx);
 } // brief draw boid in p6 window & param ctx the p6 context of creation
 
-void Flock::drawFlock3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, Model kw) const
+void Flock::drawFlock3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, const Model& kw) const
 {
     for (const Boid& boid : flock)
     {

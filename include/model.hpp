@@ -21,7 +21,7 @@ public:
         glDeleteVertexArrays(1, &m_vao);
     };
 
-    void draw()
+    void draw() const
     {
         glBindVertexArray(m_vao);
         glDrawArrays(GL_TRIANGLES, 0, getVertexCount());
