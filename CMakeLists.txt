@@ -19,6 +19,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE tinyobjloader)
 # ---Choose C++ version---
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 
+target_compile_definitions(${PROJECT_NAME} PUBLIC _USE_MATH_DEFINES)
+
 # ---Choose warning level---
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /W4)
