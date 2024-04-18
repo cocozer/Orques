@@ -1,5 +1,5 @@
 #include "random.hpp"
-#include <cmath>
+#include "glm/fwd.hpp"
 
 namespace randgen {
 
@@ -9,6 +9,26 @@ double Rand01() // renvoie un variable réelle et uniforme entre 0 et 1
     thread_local auto                       distrib = std::uniform_real_distribution<double>{0.0, 1.0};
 
     return distrib(gen);
+}
+
+long long int tempsEcoule(const Timer& timer) // retourne le temps écoulé depuis le début (en millisecondes)
+{
+    auto current = std::chrono::high_resolution_clock::now();
+    return std::chrono::duration_cast<std::chrono::milliseconds>(current - timer.debut)
+        .count();
+}
+
+int Poisson(double lambda) // renvoie un nombre d'évenement selon une loi de Poisson (parametre lambda = nombre moyen d'évènement par intervalle de temps)
+{
+    double L = exp(-lambda);
+    double p = 1.0;
+    int    k = -1;
+    do
+    {
+        k++;
+        p *= Rand01();
+    } while (p > L);
+    return k;
 }
 
 int UniformeInt(int min, int max)
@@ -31,19 +51,6 @@ double UniformeDouble(double min, double max)
     return n3;
 }
 
-int Poisson(double lambda) // renvoie un nombre d'évenement selon une loi de Poisson (parametre lambda = nombre moyen d'évènement par intervalle de temps)
-{
-    double L = exp(-lambda);
-    double p = 1.0;
-    int    k = -1;
-    do
-    {
-        k++;
-        p *= Rand01();
-    } while (p > L);
-    return k;
-}
-
 double Normale(double esperance, double ecarttype) // renvoie un double selon la loi Normale
                                                    // (méthode de Box-Muller)
 {
@@ -53,4 +60,49 @@ double Normale(double esperance, double ecarttype) // renvoie un double selon la
     double sample = esperance + ecarttype * z1;
     return sample;
 }
+
+void markov_suivant(int actual_state, glm::vec4 v)
+{
+    float a = Rand01();
+    if (a < v[0])
+    {
+        actual_state = 0;
+    }
+    else if (a < v[0] + v[1])
+    {
+        actual_state = 1;
+    }
+    else if (a < v[0] + v[1] + v[2])
+    {
+        actual_state = 2;
+    }
+    else if (a < v[0] + v[1] + v[2] + v[3])
+    {
+        actual_state = 3;
+    }
+    else
+    {
+        actual_state = 4;
+    }
+}
+
+void chaine_markov(int actual_state)
+{
+    switch (actual_state)
+    {
+    case 0:
+        markov_suivant(actual_state, markovMat[0]);
+        break;
+    case 1:
+        markov_suivant(actual_state, markovMat[1]);
+        break;
+    case 2:
+        markov_suivant(actual_state, markovMat[2]);
+        break;
+    case 3:
+        markov_suivant(actual_state, markovMat[3]);
+        break;
+    }
+}
+
 } // namespace randgen
