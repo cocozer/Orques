@@ -26,6 +26,7 @@ int    UniformeDouble(int min, int max);
 double UniformeDouble(double min, double max);
 
 double Normale(double esperance, double ecarttype);
+glm::vec2 algue_pos(float taille_cube);
 
 glm::mat4 markovMat; // + il faut definir les probas
 void markov_suivant(int actual_state, glm::vec4 v);
