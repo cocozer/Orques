@@ -30,11 +30,12 @@ void Flock::drawFlock(p6::Context& ctx) const
     // sphere(ctx);
 } // brief draw boid in p6 window & param ctx the p6 context of creation
 
-void Flock::drawFlock3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, const Model& kw, GLuint textureKw, GLint uTextureKw) const
+void Flock::drawFlock3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, const Model& kw, std::vector<GLuint> bakesKw, GLint uTextureKw) const
 {
     for (const Boid& boid : flock)
     {
-        boid.drawBoid3D(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, kw, textureKw, uTextureKw);
+        std::cout << "state : " << boid.getState() << std::endl;
+        boid.drawBoid3D(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, kw, bakesKw, uTextureKw);
     }
 }
 
@@ -296,7 +297,7 @@ void Flock::avoidPredators()
             if (&boid == &other_boid)
                 continue;
 
-            if (other_boid.getIsPredator())
+            if (other_boid.getState() == 3)
             {
                 float distance = glm::distance(boid.getPos(), other_boid.getPos());
                 if (distance < visible_range)

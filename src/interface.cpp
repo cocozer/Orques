@@ -24,7 +24,10 @@ Interface::Interface()
     p6::Shader shader = p6::load_shader("../shaders/3D.vs.glsl", "../shaders/textures3d.fs.glsl");
 
     // on charge les images
-    img::Image img_kw = p6::load_image_buffer("../assets/textures/Kw.png");
+    img::Image img_kw      = p6::load_image_buffer("../assets/textures/Kw.png");
+    img::Image img_kwBlue  = p6::load_image_buffer("../assets/textures/KwBlue.png");
+    img::Image img_kwGreen = p6::load_image_buffer("../assets/textures/KwGreen.png");
+    img::Image img_kwRed   = p6::load_image_buffer("../assets/textures/KwRed.png");
     // on récupère les variables uniformes pour les shaders
     GLint uMVPMatrix    = glGetUniformLocation(shader.id(), "uMVPMatrix");
     GLint uMVMatrix     = glGetUniformLocation(shader.id(), "uMVMatrix");
@@ -49,6 +52,34 @@ Interface::Interface()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
 
+    GLuint bakeKwBlue = 0;
+    glGenTextures(1, &bakeKwBlue);
+    glBindTexture(GL_TEXTURE_2D, bakeKwBlue);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_kw.width(), img_kw.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img_kwBlue.data());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    GLuint bakeKwGreen = 0;
+    glGenTextures(1, &bakeKwGreen);
+    glBindTexture(GL_TEXTURE_2D, bakeKwGreen);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_kw.width(), img_kw.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img_kwGreen.data());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    GLuint bakeKwRed = 0;
+    glGenTextures(1, &bakeKwRed);
+    glBindTexture(GL_TEXTURE_2D, bakeKwRed);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_kw.width(), img_kw.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img_kwRed.data());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    std::vector<GLuint> bakesKw = {bakeKw, bakeKwBlue, bakeKwGreen, bakeKwRed};
     // on bind le vbo de l'orque 3D
     kw.setVbo();
 
@@ -115,10 +146,6 @@ Interface::Interface()
         if (ImGui::IsItemEdited())
         {
             flock.setAvoidPredator(fear_predator);
-            for (const Boid& boid : flock.GetAllBoids())
-            {
-                std::cout << "Boid: " << (boid.getIsPredator() ? "Predator" : "Not Predator") << '\n';
-            }
         }
         ImGui::InputText("Texte", &texte);
 
@@ -143,7 +170,7 @@ Interface::Interface()
 
         // on utilise le shader
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        flock.drawFlock3D(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, kw, bakeKw, uTextureKw);
+        flock.drawFlock3D(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, kw, bakesKw, uTextureKw);
         // for (const Boid& boid : flock.GetAllBoids())
         // {
         //     // on calcule les matrices de vue et normales
@@ -172,6 +199,7 @@ Interface::Interface()
         glBindVertexArray(0);
     };
     // Should be done last. It starts the infinite loop.
+    setNumberOfBoids(10);
     ctx.start();
 }
 
@@ -183,7 +211,13 @@ void Interface::run_update_loop()
 void Interface::setNumberOfBoids(int num)
 {
     flock = boids::Flock(num);
+    Boid bleu;
+    bleu.setState(1);
+    flock.AddBoid(bleu);
+    Boid vert;
+    vert.setState(2);
+    flock.AddBoid(vert);
     Boid predator;
-    predator.setIsPredator(true);
+    predator.setState(3);
     flock.AddBoid(predator);
 }

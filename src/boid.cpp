@@ -6,34 +6,41 @@
 
 // blalalalala
 Boid::Boid()
-    : size(0.02), pos(0.0, 0.0, 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), isPredator(false)
+    : size(0.02), pos(0.0, 0.0, 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), state(0)
 {}
 
 Boid::Boid(const float& x, const float& y, const float& z)
-    : size(0.02), pos(x, y, z), velocity(0.0, 0.0, 0.0), isPredator(false)
+    : size(0.02), pos(x, y, z), velocity(0.0, 0.0, 0.0), state(0)
 {}
 
 Boid::Boid(float aspectRatio)
-    : size(0.2), pos(p6::random::number(-aspectRatio, aspectRatio), p6::random::number(-1, 1), 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), isPredator(false)
+    : size(0.2), pos(p6::random::number(-aspectRatio, aspectRatio), p6::random::number(-1, 1), 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), state(0)
 {
 }
-Boid::Boid(bool isPredator)
-    : size(0.02), pos(0.0, 0.0, 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), isPredator(isPredator)
+Boid::Boid(int state)
+    : size(0.02), pos(0.0, 0.0, 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), state(state)
 {}
 void Boid::drawBoid(p6::Context& ctx) const
 {
-    if (getIsPredator())
+    if (getState() == 3)
     {
         ctx.use_stroke = true;
     }
     ctx.circle(p6::Center{this->pos.x, this->pos.y}, p6::Radius(this->size));
     ctx.use_stroke = false;
 }
-void Boid::drawBoid3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, const Model& kw, GLuint textureKw, GLint uTextureKw) const
+void Boid::drawBoid3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, const Model& kw, std::vector<GLuint> bakesKw, GLint uTextureKw) const
 {
     // on calcule les matrices de vue et normales
     MVMatrix = glm::translate(glm::mat4(1.0), glm::vec3(getPos().x, getPos().y, getPos().z - 1.));
-    MVMatrix = glm::scale(MVMatrix, glm::vec3(getSize())); // Scale the model matrix to the size of the sphere
+    if (getState() == 3)
+    {
+        MVMatrix = glm::scale(MVMatrix, glm::vec3(getSize() * 3)); // Scale the model matrix to the size of the sphere
+    }
+    else
+    {
+        MVMatrix = glm::scale(MVMatrix, glm::vec3(getSize())); // Scale the model matrix to the size of the sphere
+    }
 
     // on calcule la matrice de rotation pour orienter le boid dans la direction de sa vélocité
     glm::vec3 velocity       = getVel();
@@ -49,7 +56,22 @@ void Boid::drawBoid3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm
     glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
     glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
     glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
-    glBindTexture(GL_TEXTURE_2D, textureKw);
+    if (getState() == 1)
+    {
+        glBindTexture(GL_TEXTURE_2D, bakesKw[1]);
+    }
+    else if (getState() == 2)
+    {
+        glBindTexture(GL_TEXTURE_2D, bakesKw[2]);
+    }
+    else if (getState() == 3)
+    {
+        glBindTexture(GL_TEXTURE_2D, bakesKw[3]);
+    }
+    else
+    {
+        glBindTexture(GL_TEXTURE_2D, bakesKw[0]);
+    }
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     // on dessine notre orque
@@ -81,9 +103,9 @@ void Boid::setSize(float newSize)
     size = newSize;
 }
 
-void Boid::setIsPredator(bool isPredator)
+void Boid::setState(int state)
 {
-    Boid::isPredator = isPredator;
+    Boid::state = state;
 }
 
 void Boid::updatePosition()
@@ -138,7 +160,7 @@ void Boid::checkOverflow(float limit, float turnfactor)
     }
 }
 
-bool Boid::getIsPredator() const
+int Boid::getState() const
 {
-    return isPredator;
+    return state;
 }
