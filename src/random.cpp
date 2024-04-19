@@ -64,8 +64,8 @@ double Normale(double esperance, double ecarttype) // renvoie un double selon la
 glm::vec2 algue_pos(float taille_cube)
 {
     double algue_x, algue_z;
-    algue_x = Normale(taille_cube/2, taille_cube/5);
-    algue_z = Normale(taille_cube/2, taille_cube/5);
+    algue_x             = Normale(taille_cube / 2, taille_cube / 5);
+    algue_z             = Normale(taille_cube / 2, taille_cube / 5);
     glm::vec2 algue_pos = {algue_x, algue_z};
     return algue_pos;
 }
@@ -95,7 +95,7 @@ void markov_suivant(int actual_state, glm::vec4 v)
     }
 }
 
-void chaine_markov(int actual_state)
+void chaine_markov(int actual_state, glm::mat4 markovMat)
 {
     switch (actual_state)
     {

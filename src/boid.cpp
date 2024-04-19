@@ -3,7 +3,7 @@
 #include "glm/geometric.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "p6/p6.h"
-#include "random.hpp"
+
 // blalalalala
 Boid::Boid()
     : size(0.02), pos(0.0, 0.0, 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), isPredator(false)

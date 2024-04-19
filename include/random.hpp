@@ -8,7 +8,6 @@
 #include <thread>
 #include <vector>
 #include "glm/glm.hpp"
-#include <cmath>
 
 namespace randgen {
 
@@ -18,18 +17,18 @@ struct Timer { // pour stocker le temps de début
         : debut(std::chrono::high_resolution_clock::now()) {}
 };
 
-double Rand01();
+double        Rand01();
 long long int tempsEcoule(const Timer& timer);
-int    Poisson(double lambda);
+int           Poisson(double lambda);
 
 int    UniformeDouble(int min, int max);
 double UniformeDouble(double min, double max);
 
-double Normale(double esperance, double ecarttype);
+double    Normale(double esperance, double ecarttype);
 glm::vec2 algue_pos(float taille_cube);
 
-glm::mat4 markovMat; // + il faut definir les probas
+// glm::mat4 markovMat; // + il faut definir les probas
 void markov_suivant(int actual_state, glm::vec4 v);
-void chaine_markov(int actual_state);
+void chaine_markov(int actual_state, glm::mat4 markovMat);
 
 } // namespace randgen

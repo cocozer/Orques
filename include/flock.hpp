@@ -3,7 +3,9 @@
 #include <vector>
 #include "boid.hpp"
 #include "model.hpp"
+#include "random.hpp"
 #include "test_sphere.hpp"
+
 
 namespace boids {
 class Flock {
