@@ -11,6 +11,7 @@ public:
 
     void        run_update_loop(); // fonction qui affiche l'interface graphique
     void        setNumberOfBoids(int num);
+    void        drawSkybox(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, const Model& cube, GLuint bakeSkybox, GLint uTextureSkybox);
     p6::Context ctx;
 
 private: // on déclare les variables membres de la classe Interface

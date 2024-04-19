@@ -34,7 +34,6 @@ void Flock::drawFlock3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, g
 {
     for (const Boid& boid : flock)
     {
-        std::cout << "state : " << boid.getState() << std::endl;
         boid.drawBoid3D(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, kw, bakesKw, uTextureKw);
     }
 }

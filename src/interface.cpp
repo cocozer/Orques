@@ -28,20 +28,24 @@ Interface::Interface()
     img::Image img_kwBlue  = p6::load_image_buffer("../assets/textures/KwBlue.png");
     img::Image img_kwGreen = p6::load_image_buffer("../assets/textures/KwGreen.png");
     img::Image img_kwRed   = p6::load_image_buffer("../assets/textures/KwRed.png");
+    img::Image img_water   = p6::load_image_buffer("../assets/textures/water_texture.png");
     // on récupère les variables uniformes pour les shaders
     GLint uMVPMatrix    = glGetUniformLocation(shader.id(), "uMVPMatrix");
     GLint uMVMatrix     = glGetUniformLocation(shader.id(), "uMVMatrix");
     GLint uNormalMatrix = glGetUniformLocation(shader.id(), "uNormalMatrix");
 
     // recup var uniforme texture
-    GLint uTextureKw = glGetUniformLocation(shader.id(), "uText");
-    if (uTextureKw == -1)
+    GLint uTexture = glGetUniformLocation(shader.id(), "uText");
+    if (uTexture == -1)
     {
-        std::cerr << "Warning: Uniform uTextureLocation not found in shader!" << '\n';
+        std::cerr << "Warning: Uniform uTexture not found in shader!" << '\n';
     }
     // on charge le modele 3D
     Model kw = Model();
     kw.loadModel("kw.obj");
+
+    Model skybox = Model();
+    skybox.loadModel("cube.obj");
 
     GLuint bakeKw = 0;
     glGenTextures(1, &bakeKw);
@@ -80,14 +84,26 @@ Interface::Interface()
     glBindTexture(GL_TEXTURE_2D, 0);
 
     std::vector<GLuint> bakesKw = {bakeKw, bakeKwBlue, bakeKwGreen, bakeKwRed};
+
+    GLuint bakeSkybox = 0;
+    glGenTextures(1, &bakeSkybox);
+    glBindTexture(GL_TEXTURE_2D, bakeSkybox);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_water.width(), img_water.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img_water.data());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     // on bind le vbo de l'orque 3D
     kw.setVbo();
+    skybox.setVbo();
 
     // on active le test de profondeur
     glEnable(GL_DEPTH_TEST);
 
     // on bind le vao de l'orque 3D
     kw.setVao();
+    skybox.setVao();
 
     // on initialise les matrices de transformation pour les shaders
     glm::mat4 ProjMatrix;
@@ -170,7 +186,8 @@ Interface::Interface()
 
         // on utilise le shader
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        flock.drawFlock3D(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, kw, bakesKw, uTextureKw);
+        drawSkybox(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, skybox, bakeSkybox, uTexture);
+        flock.drawFlock3D(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, kw, bakesKw, uTexture);
         // for (const Boid& boid : flock.GetAllBoids())
         // {
         //     // on calcule les matrices de vue et normales
@@ -220,4 +237,25 @@ void Interface::setNumberOfBoids(int num)
     Boid predator;
     predator.setState(3);
     flock.AddBoid(predator);
+}
+
+void Interface::drawSkybox(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, const Model& cube, GLuint bakeSkybox, GLint uTextureSkybox)
+{
+    MVMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0, 0, 0));
+    MVMatrix = glm::scale(MVMatrix, glm::vec3(rayon_carre)); // Scale the model matrix to the size of the sphere
+
+    NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
+
+    glUniform1i(uTextureSkybox, 0);
+    // on bind les matrices au shader
+    glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+    glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+    glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+
+    glBindTexture(GL_TEXTURE_2D, bakeSkybox);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    // on dessine notre orque
+    cube.draw();
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
