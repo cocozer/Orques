@@ -19,6 +19,9 @@ Interface::Interface()
     /*********************************
      * INITIALIZATION CODE
      *********************************/
+    // on charge les shaders
+    p6::Shader shader = p6::load_shader("../shaders/3D.vs.glsl", "../shaders/textures3d.fs.glsl");
+
     // on charge les images
     img::Image img_kw      = p6::load_image_buffer("../assets/textures/Kw.png");
     img::Image img_kwBlue  = p6::load_image_buffer("../assets/textures/KwBlue.png");
@@ -108,9 +111,6 @@ Interface::Interface()
     glm::mat4 ProjMatrix;
     glm::mat4 MVMatrix;
     glm::mat4 NormalMatrix;
-
-    // on charge les shaders
-    p6::Shader shader = p6::load_shader("../shaders/3D.vs.glsl", "../shaders/textures3d.fs.glsl");
 
     // on récupère les variables uniformes pour les shaders
     GLint uMVPMatrix    = glGetUniformLocation(shader.id(), "uMVPMatrix");
