@@ -19,10 +19,6 @@ Interface::Interface()
     /*********************************
      * INITIALIZATION CODE
      *********************************/
-
-    // on charge les shaders
-    p6::Shader shader = p6::load_shader("../shaders/3D.vs.glsl", "../shaders/textures3d.fs.glsl");
-
     // on charge les images
     img::Image img_kw      = p6::load_image_buffer("../assets/textures/Kw.png");
     img::Image img_kwBlue  = p6::load_image_buffer("../assets/textures/KwBlue.png");
@@ -30,19 +26,7 @@ Interface::Interface()
     img::Image img_kwRed   = p6::load_image_buffer("../assets/textures/KwRed.png");
     img::Image img_water   = p6::load_image_buffer("../assets/textures/water_texture.png");
     img::Image img_turtle  = p6::load_image_buffer("../assets/textures/turtleBaked.png");
-    // on récupère les variables uniformes pour les shaders
-    GLint uMVPMatrix    = glGetUniformLocation(shader.id(), "uMVPMatrix");
-    GLint uMVMatrix     = glGetUniformLocation(shader.id(), "uMVMatrix");
-    GLint uNormalMatrix = glGetUniformLocation(shader.id(), "uNormalMatrix");
-
-    // recup var uniforme texture
-    GLint uTexture = glGetUniformLocation(shader.id(), "uText");
-    if (uTexture == -1)
-    {
-        std::cerr << "Warning: Uniform uTexture not found in shader!" << '\n';
-    }
-    // on charge le modele 3D
-    Model kw = Model();
+    Model      kw          = Model();
     kw.loadModel("kw.obj");
 
     Model skybox = Model();
@@ -124,6 +108,21 @@ Interface::Interface()
     glm::mat4 ProjMatrix;
     glm::mat4 MVMatrix;
     glm::mat4 NormalMatrix;
+    // on charge les shaders
+    p6::Shader shader = p6::load_shader("../shaders/3D.vs.glsl", "../shaders/textures3d.fs.glsl");
+
+    // on récupère les variables uniformes pour les shaders
+    GLint uMVPMatrix    = glGetUniformLocation(shader.id(), "uMVPMatrix");
+    GLint uMVMatrix     = glGetUniformLocation(shader.id(), "uMVMatrix");
+    GLint uNormalMatrix = glGetUniformLocation(shader.id(), "uNormalMatrix");
+
+    // recup var uniforme texture
+    GLint uTexture = glGetUniformLocation(shader.id(), "uText");
+    if (uTexture == -1)
+    {
+        std::cerr << "Warning: Uniform uTexture not found in shader!" << '\n';
+    }
+    // on charge le modele 3D
 
     ProjMatrix = glm::perspective(glm::radians(70.f), ctx.aspect_ratio(), 0.1f, 100.f);
     Surveyor surveyor(turtle);
