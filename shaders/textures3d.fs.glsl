@@ -1,4 +1,4 @@
-#version 330
+#version 330 core
 
 //variables d'entrées
 in vec3 vPosition_vs;

@@ -1,4 +1,4 @@
-#version 330
+#version 330 core
 //blalalalala
 //variables d'entrées
 in vec3 vNormal_vs;
