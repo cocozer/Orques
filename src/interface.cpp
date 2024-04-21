@@ -10,11 +10,11 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "img/src/Image.h"
 #include "p6/p6.h"
+#include "surveyor.hpp"
 #include "tiny_obj_loader.h"
 
-// blalalalalallalall
 Interface::Interface()
-    : ctx{{1280, 720, "Cher ImGui"}}, rayon_carre(0.3f), position_cercle(0, 0, 0), nombre_boids(10), taille_boids(0.03f), separation(0.01f), protected_range(0.1), alignement(0.05f), cohesion(0.001f), average_speed(0.01), turning_factor(0.01), fear_predator(0.001f), texte("Test")
+    : ctx{{1280, 720, "Cher ImGui"}}, rayon_cube(0.3f), position_cercle(0, 0, 0), nombre_boids(10), taille_boids(0.03f), separation(0.01f), protected_range(0.1), alignement(0.05f), cohesion(0.001f), average_speed(0.01), turning_factor(0.01), fear_predator(0.001f), texte("Test")
 {
     /*********************************
      * INITIALIZATION CODE
@@ -111,11 +111,16 @@ Interface::Interface()
     glm::mat4 NormalMatrix;
 
     ProjMatrix = glm::perspective(glm::radians(70.f), ctx.aspect_ratio(), 0.1f, 100.f);
+    Surveyor surveyor(kw);
+    bool     right = false;
+    bool     left  = false;
+    bool     up    = false;
+    bool     down  = false;
 
     ctx.imgui = [&]() {
         // Affiche une fenêtre simple
         ImGui::Begin("Test");
-        ImGui::SliderFloat("Taille carrée", &rayon_carre, 0.f, 0.6f);
+        ImGui::SliderFloat("Taille carrée", &rayon_cube, 0.f, 0.6f);
         ImGui::SliderFloat3("Position cercle", glm::value_ptr(position_cercle), 0.f, 1.f);
         ImGui::SliderInt("Nombre de Boids", &nombre_boids, 0, 50);
         if (ImGui::IsItemEdited())
@@ -173,44 +178,24 @@ Interface::Interface()
 
     ctx.update = [&]() {
         ctx.background({1, 0.5, 0.7, 1});
-        ctx.square(p6::Center{}, p6::Radius{rayon_carre});
-        flock.Update(rayon_carre);
+        ctx.square(p6::Center{}, p6::Radius{rayon_cube});
+        flock.Update(rayon_cube);
 
         /*********************************
          * HERE SHOULD COME THE RENDERING CODE
          *********************************/
+        moveSurveyor(surveyor, left, right, up, down, ctx);
+        MVMatrix = surveyor.getViewMatrix();
+
+        surveyor.update_camera(MVMatrix);
         // config du shader
         shader.use();
 
-        // glClearColor(0.9f, 0.1f, 0.6f, 1.f);
-
         // on utilise le shader
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        drawSkybox(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, skybox, bakeSkybox, uTexture);
+        skybox.drawModel(glm::vec3(0, 0, 0), glm::vec3(rayon_cube), MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, bakeSkybox, uTexture);
         flock.drawFlock3D(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, kw, bakesKw, uTexture);
-        // for (const Boid& boid : flock.GetAllBoids())
-        // {
-        //     // on calcule les matrices de vue et normales
-        //     MVMatrix = glm::translate(glm::mat4(1.0), glm::vec3(boid.getPos().x, boid.getPos().y, boid.getPos().z - 1.));
-        //     MVMatrix = glm::scale(MVMatrix, glm::vec3(boid.getSize())); // Scale the model matrix to the size of the sphere
-
-        //     // on calcule la matrice de rotation pour orienter le boid dans la direction de sa vélocité
-        //     glm::vec3 velocity       = boid.getVel();
-        //     float     angleY         = atan2(velocity.x, velocity.z);
-        //     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angleY, glm::vec3(0.0f, 1.0f, 0.0f));
-
-        //     // on applique la rotation à la matrice de modèle-vue
-        //     MVMatrix     = MVMatrix * rotationMatrix;
-        //     NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
-
-        //     // on bind les matrices au shader
-        //     glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-        //     glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-        //     glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
-
-        //     // on dessine notre orque
-        //     kw.draw();
-        // }
+        // surveyor.drawSurveyor(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, kw, bakeKw, uTexture);
 
         // on debind le vao
         glBindVertexArray(0);
@@ -237,25 +222,4 @@ void Interface::setNumberOfBoids(int num)
     Boid predator;
     predator.setState(3);
     flock.AddBoid(predator);
-}
-
-void Interface::drawSkybox(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, const Model& cube, GLuint bakeSkybox, GLint uTextureSkybox)
-{
-    MVMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0, 0, 0));
-    MVMatrix = glm::scale(MVMatrix, glm::vec3(rayon_carre)); // Scale the model matrix to the size of the sphere
-
-    NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
-
-    glUniform1i(uTextureSkybox, 0);
-    // on bind les matrices au shader
-    glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-    glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-    glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
-
-    glBindTexture(GL_TEXTURE_2D, bakeSkybox);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    // on dessine notre orque
-    cube.draw();
-    glBindTexture(GL_TEXTURE_2D, 0);
 }

@@ -1,136 +1,131 @@
 #include "surveyor.hpp"
 #include <p6/p6.h>
+#include <glm/glm.hpp>
+#include <vector>
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/fwd.hpp"
 #include "glm/trigonometric.hpp"
 
-Surveyor::Surveyor()
-    : m_position(0., 0., 0.), m_camera_horizontal(0.0f), m_camera_vertical(0.0f), m_camera_distance(0.5f){};
-
-Surveyor::Surveyor(glm::vec3 posSurveyor)
-    : m_position(posSurveyor), m_camera_horizontal(0.0f), m_camera_vertical(0.0f), m_camera_distance(0.5f){};
-
-Surveyor::Surveyor(glm::vec3 posSurveyor, GLfloat camera_horizontal, GLfloat camera_vertical, GLfloat camera_distance)
-    : m_position(posSurveyor), m_camera_horizontal(camera_horizontal), m_camera_vertical(camera_vertical), m_camera_distance(camera_distance){};
-
-void Surveyor::setPosition(glm::vec3 posSurveyor)
+//---Camera---
+Surveyor::Surveyor(Model& model)
+    : m_cam_position(glm::vec3(0., 0., 0.)), m_phi(p6::PI), m_theta(0.), m_rotation_angle(0.), m_model(model), m_cam_distance(0.5f), m_cam_height(0.2f)
 {
-    m_position = posSurveyor;
+    this->setDirectionVectors();
 }
 
+void Surveyor::setDirectionVectors()
+{
+    // Calcul des vecteurs de direction en fonction des angles phi et theta
+    m_front_vector = glm::vec3(glm::cos(m_theta) * glm::sin(m_phi), glm::sin(m_theta), glm::cos(m_theta) * glm::cos(m_phi));
+    m_left_vector  = glm::vec3(glm::sin(m_phi + (p6::PI / 2)), 0, glm::cos(m_phi + (p6::PI / 2)));
+    m_up_vector    = glm::cross(m_front_vector, m_left_vector);
+    // std::cout << "Frontvector : " << m_front_vector .x << "+" << m_front_vector .y << "+" << m_front_vector .z << std::endl;
+    // std::cout << "LeftVector : " << m_left_vector  .x << "+" << m_left_vector  .y << "+" << m_left_vector  .z << std::endl;
+    // std::cout << "UpVector : " << m_up_vector    .x << "+" << m_up_vector    .y << "+" << m_up_vector    .z << std::endl;
+    // std::cout << "Position : " << m_Position.x << "+" << m_Position.y << "+" << m_Position.z << std::endl;
+    // std::cout << "-------------------------" << std::endl;
+}
+
+void Surveyor::setPosition(glm::vec3 position_surveyor)
+{
+    // Définition de la position de la caméra
+    m_cam_position = position_surveyor;
+}
 glm::vec3 Surveyor::getPosition()
 {
-    return m_position;
+    // Récupération de la position de la caméra
+    return m_cam_position;
 }
-
-void Surveyor::setDistance(GLfloat distance)
+void Surveyor::setRotationAngle(float rotation_angle)
 {
-    m_camera_distance = distance;
+    // Définition de l'angle de rotation de la caméra
+    m_rotation_angle = rotation_angle;
 }
-
-GLfloat Surveyor::getCameraDistance() const
+float Surveyor::getRotationAngle() const
 {
-    return m_camera_distance;
+    // Récupération de l'angle de rotation de la caméra
+    return m_rotation_angle;
 }
-
-void Surveyor::setCameraHorizontal(float angle)
+void Surveyor::moveToLeft(float t)
 {
-    m_camera_horizontal = angle;
+    // Déplacement de la caméra vers la gauche
+    m_cam_position += t * m_left_vector;
+    setDirectionVectors();
 }
-
-GLfloat Surveyor::getCameraHorizontal() const
+void Surveyor::moveToFront(float t)
 {
-    return m_camera_horizontal;
+    // Déplacement de la caméra vers l'avant
+    m_cam_position += t * m_front_vector;
+    setDirectionVectors();
 }
-
-void Surveyor::setCameraVertical(float angle)
+void Surveyor::rotateToLeft(float degrees)
 {
-    m_camera_vertical = angle;
+    // Rotation de la caméra vers la gauche
+    m_phi += glm::radians(degrees);
+    setDirectionVectors();
 }
-
-GLfloat Surveyor::getCameraVertical() const
+void Surveyor::rotateToUp(float degrees)
 {
-    return m_camera_vertical;
+    // Rotation de la caméra vers le haut
+    m_theta += glm::radians(degrees);
+    setDirectionVectors();
 }
-
-void Surveyor::move(glm::vec3 distance)
+glm::mat4 Surveyor::getViewMatrix() const
 {
-    m_position += distance;
+    // Récupération de la matrice de vue de la caméra
+    return glm::lookAt(m_cam_position, m_cam_position + m_front_vector, m_up_vector);
 }
-
-void Surveyor::moveCameraSide(float distance)
+void Surveyor::update_camera(glm::mat4& ViewMatrix)
 {
-    glm::vec3 position = {distance * sin((m_camera_horizontal + 90.0f) * p6::PI / 180.0f), 0.0f, -distance * cos((m_camera_horizontal + 90.0f) * p6::PI / 180.0f)};
-    move(position);
+    // Mise à jour de la position de la caméra en fonction de la vue du surveyor
+    glm::mat4 modelRotationMatrix = glm::rotate(glm::mat4(1.0f), getRotationAngle(), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 invPlayerViewMatrix = glm::inverse(ViewMatrix);
+    auto      surveyorPosition    = glm::vec3(invPlayerViewMatrix[3]);
+    glm::vec3 cameraPos           = surveyorPosition + m_cam_distance * glm::vec3(modelRotationMatrix * glm::vec4(invPlayerViewMatrix[2])) + m_cam_height * glm::vec3(invPlayerViewMatrix[1]);
+    ViewMatrix                    = glm::lookAt(cameraPos, surveyorPosition, glm::vec3(0.0f, 1.0f, 0.0f));
 }
-
-void Surveyor::moveCameraForward(float distance)
+void Surveyor::drawSurveyor(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, Model surveyor, GLuint bakedTexture, GLint uTextureName)
 {
-    glm::vec3 position = {distance * sin(m_camera_horizontal * p6::PI / 180.0f), 0.0f, -distance * cos(m_camera_horizontal * p6::PI / 180.0f)};
-    move(position);
-}
+    // Configuration des matrices de transformation et envoi au shader
+    MVMatrix     = glm::translate(MVMatrix, m_cam_position);
+    MVMatrix     = glm::translate(MVMatrix, glm::vec3(0, -0.4, 0));
+    MVMatrix     = glm::scale(MVMatrix, glm::vec3(0.15, 0.15, 0.15));
+    NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 
-void Surveyor::rotateCameraHorizontal(float angle)
-{
-    m_camera_horizontal += angle;
-}
-void Surveyor::rotateCameraVertical(float angle)
-{
-    m_camera_vertical += glm::radians(angle);
-    if (m_camera_vertical > 1.5f)
-    {
-        m_camera_vertical = 1.5f;
-    }
-}
-glm::mat4 Surveyor::updateCamera()
-{
-    glm::vec3 position;
-    position.x = getPosition().x + m_camera_distance * sin(m_camera_horizontal * p6::PI / 180.0f) * cos(m_camera_vertical * p6::PI / 180.0f);
-    position.y = getPosition().y + m_camera_distance * sin(m_camera_vertical * p6::PI / 180.0f);
-    position.z = getPosition().z + m_camera_distance * cos(m_camera_horizontal * p6::PI / 180.0f) * cos(m_camera_vertical * p6::PI / 180.0f);
-
-    return glm::lookAt(position, getPosition(), glm::vec3(0.0f, 1.0f, 0.f));
-}
-
-void Surveyor::draw(glm::mat4 ViewMatrix, std::vector<glimac::ShapeVertex> vertices, glm::mat4 ProjMatrix, GLint uMVPMatrix, GLint uMVMatrix, GLint uNormalMatrix)
-{
-    ViewMatrix = glm::translate(ViewMatrix, m_position);
-    ViewMatrix = glm::translate(ViewMatrix, glm::vec3(0, -0.5, 0.0));
-
-    ViewMatrix             = glm::scale(ViewMatrix, glm::vec3(0.2, 0.2, 0.2));
-    glm::mat4 NormalMatrix = glm::transpose(glm::inverse(ViewMatrix));
-
-    glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * ViewMatrix));
-    glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(ViewMatrix));
+    glUniform1i(uTextureName, 0);
+    // on bind les matrices au shader
+    glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+    glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
     glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
-    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
+    glBindTexture(GL_TEXTURE_2D, bakedTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    // on dessine notre surveyor
+    surveyor.draw();
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
-
 void moveSurveyor(Surveyor& surveyor, bool& left, bool& right, bool& up, bool& down, p6::Context& ctx)
 {
+    // Gestion des commandes de la caméra par le joueur
     if (right)
     {
-        surveyor.moveCameraSide(-0.02f);
-        surveyor.move(glm::vec3(0.02f, 0.0f, 0.0f));
+        surveyor.moveToLeft(-0.002f); // va à droite
     }
     if (left)
     {
-        surveyor.moveCameraSide(0.02f);
-        surveyor.move(glm::vec3(-0.02f, 0.0f, 0.0f));
+        surveyor.moveToLeft(+0.002f); // va à gauche
     }
     if (up)
     {
-        surveyor.moveCameraForward(0.02f);
-        surveyor.move(glm::vec3(0.00f, 0.0f, 0.02f));
+        surveyor.moveToFront(0.005f); // avance
     }
     if (down)
     {
-        surveyor.moveCameraForward(-0.02f);
-        surveyor.move(glm::vec3(0.00f, 0.0f, -0.02f));
+        surveyor.moveToFront(-0.005f); // recule
     }
 
-    ctx.key_pressed = [&right, &up, &left, &down](const p6::Key& key) {
+    ctx.key_pressed = [&right, &up, &left, &down](p6::Key key) { // avancer avec les touches zqsd
         if (key.logical == "z")
         {
             up = true;
@@ -149,7 +144,7 @@ void moveSurveyor(Surveyor& surveyor, bool& left, bool& right, bool& up, bool& d
         }
     };
 
-    ctx.key_released = [&right, &up, &left, &down](const p6::Key& key) {
+    ctx.key_released = [&right, &up, &left, &down](p6::Key key) {
         if (key.logical == "z")
         {
             up = false;
@@ -167,9 +162,13 @@ void moveSurveyor(Surveyor& surveyor, bool& left, bool& right, bool& up, bool& d
             right = false;
         }
     };
-
+    // regarder à gauche à droite avec la souris comme dans Minecraft
     ctx.mouse_dragged = [&surveyor](const p6::MouseDrag& button) {
-        surveyor.rotateCameraHorizontal(button.delta.x * 5);
-        surveyor.rotateCameraVertical(-button.delta.y * 5);
+        surveyor.rotateToLeft(button.delta.x * 25);
+        surveyor.rotateToUp(-button.delta.y * 25);
+    };
+
+    ctx.mouse_scrolled = [&](p6::MouseScroll scroll) {
+        surveyor.moveToFront(-scroll.dy);
     };
 }

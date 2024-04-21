@@ -4,38 +4,38 @@
 #include "glimac/sphere_vertices.hpp"
 #include "glm/fwd.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "model.hpp"
 #include "p6/p6.h"
 
 class Surveyor {
 private:
-    glm::vec3 m_position; // camera position
-    GLfloat   m_camera_horizontal;
-    GLfloat   m_camera_vertical;
-    GLfloat   m_camera_distance;
-    bool      m_go_right;
-    bool      m_go_left;
-    bool      m_go_forward;
-    bool      m_go_backward;
+    Model&    m_model;
+    float     m_cam_distance;
+    float     m_cam_height;
+    glm::vec3 m_cam_position;
+    float     m_phi;
+    float     m_theta;
+    float     m_rotation_angle;
+
+    glm::vec3 m_front_vector;
+    glm::vec3 m_left_vector;
+    glm::vec3 m_up_vector;
+
+    void setDirectionVectors();
 
 public:
-    explicit Surveyor(glm::vec3 posSurveyor);
-    explicit Surveyor(glm::vec3 posSurveyor, GLfloat camera_horizontal, GLfloat camera_vertical, GLfloat camera_distance);
-    Surveyor();
-
-    void      move(glm::vec3 distance);
-    void      moveCameraSide(float distance);
-    void      moveCameraForward(float distance);
-    void      rotateCameraHorizontal(float angle);
-    void      rotateCameraVertical(float angle);
-    glm::mat4 updateCamera();
-    void      cameraChange(bool& left, bool& right, bool& up, bool& down);
-    void      setPosition(glm::vec3 posSurveyor);
+    explicit Surveyor(Model& model);
+    void update_camera(glm::mat4& viewMatrix);
+    ~Surveyor() = default;
+    void      drawSurveyor(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, Model surveyor, GLuint bakedTexture, GLint uTextureName);
+    void      setPosition(glm::vec3 position_surveyor);
     glm::vec3 getPosition();
-    void      setCameraHorizontal(float angle);
-    GLfloat   getCameraHorizontal() const;
-    void      setCameraVertical(float angle);
-    GLfloat   getCameraVertical() const;
-    void      setDistance(GLfloat distance);
-    GLfloat   getCameraDistance() const;
-    void      draw(glm::mat4 ViewMatrix, std::vector<glimac::ShapeVertex> vertices, glm::mat4 ProjMatrix, GLint uMVPMatrix, GLint uMVMatrix, GLint uNormalMatrix);
+    void      setRotationAngle(float rotation_angle);
+    float     getRotationAngle() const;
+    void      moveToLeft(float t);
+    void      moveToFront(float t);
+    void      rotateToLeft(float degrees);
+    void      rotateToUp(float degrees);
+    glm::mat4 getViewMatrix() const;
 };
+void moveSurveyor(Surveyor& surveyor, bool& left, bool& right, bool& up, bool& down, p6::Context& ctx);

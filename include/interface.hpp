@@ -15,7 +15,7 @@ public:
     p6::Context ctx;
 
 private: // on déclare les variables membres de la classe Interface
-    float        rayon_carre;
+    float        rayon_cube;
     glm::vec3    position_cercle;
     int          nombre_boids;
     float        taille_boids;

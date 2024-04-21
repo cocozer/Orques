@@ -1,7 +1,13 @@
 #include "model.hpp"
 #include <glimac/common.hpp>
-// blalalallala
-//  let's go utiliser la librairie tinyobj
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/fwd.hpp"
+#include "glm/geometric.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include "glm/matrix.hpp"
+
+// utiliser la librairie tinyobj
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
@@ -86,4 +92,25 @@ void Model::loadModel(const std::string& fileName)
         }
     }
     m_vertexCount = m_vertices.size(); // Mise à jour du compteur de vertices
+}
+void Model::drawModel(glm::vec3 position, glm::vec3 scale, glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, GLuint bakedTexture, GLint uTextureName)
+{
+    glm::mat4 ViewMatrixModel = glm::translate(glm::mat4(1.0), position);
+    ViewMatrixModel           = glm::scale(ViewMatrixModel, scale);
+    MVMatrix                  = MVMatrix * ViewMatrixModel;
+
+    NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
+
+    glUniform1i(uTextureName, 0);
+    // on bind les matrices au shader
+    glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+    glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+    glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+
+    glBindTexture(GL_TEXTURE_2D, bakedTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    // on dessine notre cube
+    draw();
+    glBindTexture(GL_TEXTURE_2D, 0);
 }

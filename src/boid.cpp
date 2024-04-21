@@ -31,17 +31,17 @@ void Boid::drawBoid(p6::Context& ctx) const
 }
 void Boid::drawBoid3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, const Model& kw, std::vector<GLuint> bakesKw, GLint uTextureKw) const
 {
-    // on calcule les matrices de vue et normales
-    MVMatrix = glm::translate(glm::mat4(1.0), glm::vec3(getPos().x, getPos().y, getPos().z));
+    glm::mat4 ViewMatrixModel = glm::translate(glm::mat4(1.0), glm::vec3(getPos().x, getPos().y, getPos().z));
+
     if (getState() == 3)
     {
-        MVMatrix = glm::scale(MVMatrix, glm::vec3(getSize() * 3)); // Scale the model matrix to the size of the sphere
+        ViewMatrixModel = glm::scale(ViewMatrixModel, glm::vec3(getSize() * 3));
     }
     else
     {
-        MVMatrix = glm::scale(MVMatrix, glm::vec3(getSize())); // Scale the model matrix to the size of the sphere
+        ViewMatrixModel = glm::scale(ViewMatrixModel, glm::vec3(getSize()));
     }
-
+    MVMatrix = MVMatrix * ViewMatrixModel;
     // on calcule la matrice de rotation pour orienter le boid dans la direction de sa vélocité
     glm::vec3 velocity       = getVel();
     float     angleY         = atan2(velocity.x, velocity.z);
