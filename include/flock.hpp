@@ -11,14 +11,14 @@ class Flock {
 private:
     std::vector<Boid> flock;               // Vecteur de boids
     double            avoid_factor{0.005}; // separation
-    double            matching_factor{0.0};
-    double            centering_factor{0.0};
+    double            matching_factor{0.005};
+    double            centering_factor{0.015};
     double            turn_factor{0.0005};
-    double            protected_range{0.1};
+    double            protected_range{0.15};
     double            visible_range{0.3};
     double            min_speed{0.005};
     double            max_speed{0.01};
-    double            fear_predator{0.005};
+    double            fear_predator{0.01};
 
 public:
     // Flock();
