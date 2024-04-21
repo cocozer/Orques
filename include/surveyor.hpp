@@ -27,7 +27,7 @@ public:
     explicit Surveyor(Model& model);
     void update_camera(glm::mat4& viewMatrix);
     ~Surveyor() = default;
-    void      drawSurveyor(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, Model surveyor, GLuint bakedTexture, GLint uTextureName);
+    void      drawSurveyor(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, const Model& surveyor, GLuint bakedTexture, GLint uTextureName);
     void      setPosition(glm::vec3 position_surveyor);
     glm::vec3 getPosition();
     void      setRotationAngle(float rotation_angle);

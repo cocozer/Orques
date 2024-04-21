@@ -84,7 +84,7 @@ void Surveyor::update_camera(glm::mat4& ViewMatrix)
     glm::vec3 cameraPos           = surveyorPosition + m_cam_distance * glm::vec3(modelRotationMatrix * glm::vec4(invPlayerViewMatrix[2])) + m_cam_height * glm::vec3(invPlayerViewMatrix[1]);
     ViewMatrix                    = glm::lookAt(cameraPos, surveyorPosition, glm::vec3(0.0f, 1.0f, 0.0f));
 }
-void Surveyor::drawSurveyor(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, Model surveyor, GLuint bakedTexture, GLint uTextureName)
+void Surveyor::drawSurveyor(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, const Model& surveyor, GLuint bakedTexture, GLint uTextureName)
 {
     // Configuration des matrices de transformation et envoi au shader
     MVMatrix     = glm::translate(MVMatrix, m_cam_position);
