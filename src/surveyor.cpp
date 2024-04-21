@@ -89,8 +89,10 @@ void Surveyor::drawSurveyor(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatri
 {
     // Configuration des matrices de transformation et envoi au shader
     MVMatrix     = glm::translate(MVMatrix, m_cam_position);
-    MVMatrix     = glm::translate(MVMatrix, glm::vec3(0, 0.1, 0.3));
+    MVMatrix     = glm::translate(MVMatrix, glm::vec3(0, 0.15, 0.2));
     MVMatrix     = glm::scale(MVMatrix, glm::vec3(0.05, 0.05, 0.05));
+    MVMatrix     = glm::rotate(MVMatrix, m_theta / 3, glm::vec3(1.0f, 0.0f, 0.0f));
+    MVMatrix     = glm::rotate(MVMatrix, m_phi, glm::vec3(0.0f, 1.0f, 0.0f));
     NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 
     glUniform1i(uTextureName, 0);
