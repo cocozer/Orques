@@ -4,6 +4,7 @@
 #include <vector>
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/fwd.hpp"
+#include "glm/gtx/quaternion.hpp"
 #include "glm/trigonometric.hpp"
 
 //---Camera---
@@ -88,8 +89,8 @@ void Surveyor::drawSurveyor(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatri
 {
     // Configuration des matrices de transformation et envoi au shader
     MVMatrix     = glm::translate(MVMatrix, m_cam_position);
-    MVMatrix     = glm::translate(MVMatrix, glm::vec3(0, -0.4, 0));
-    MVMatrix     = glm::scale(MVMatrix, glm::vec3(0.15, 0.15, 0.15));
+    MVMatrix     = glm::translate(MVMatrix, glm::vec3(0, 0.1, 0.3));
+    MVMatrix     = glm::scale(MVMatrix, glm::vec3(0.05, 0.05, 0.05));
     NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 
     glUniform1i(uTextureName, 0);

@@ -29,6 +29,7 @@ Interface::Interface()
     img::Image img_kwGreen = p6::load_image_buffer("../assets/textures/KwGreen.png");
     img::Image img_kwRed   = p6::load_image_buffer("../assets/textures/KwRed.png");
     img::Image img_water   = p6::load_image_buffer("../assets/textures/water_texture.png");
+    img::Image img_turtle  = p6::load_image_buffer("../assets/textures/turtleBaked.png");
     // on récupère les variables uniformes pour les shaders
     GLint uMVPMatrix    = glGetUniformLocation(shader.id(), "uMVPMatrix");
     GLint uMVMatrix     = glGetUniformLocation(shader.id(), "uMVMatrix");
@@ -46,6 +47,18 @@ Interface::Interface()
 
     Model skybox = Model();
     skybox.loadModel("cube.obj");
+
+    Model turtle = Model();
+    turtle.loadModel("arpenteur.obj");
+
+    GLuint bakeTurtle = 0;
+    glGenTextures(1, &bakeTurtle);
+    glBindTexture(GL_TEXTURE_2D, bakeTurtle);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_turtle.width(), img_turtle.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img_turtle.data());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     GLuint bakeKw = 0;
     glGenTextures(1, &bakeKw);
@@ -97,6 +110,7 @@ Interface::Interface()
     // on bind le vbo de l'orque 3D
     kw.setVbo();
     skybox.setVbo();
+    turtle.setVbo();
 
     // on active le test de profondeur
     glEnable(GL_DEPTH_TEST);
@@ -104,6 +118,7 @@ Interface::Interface()
     // on bind le vao de l'orque 3D
     kw.setVao();
     skybox.setVao();
+    turtle.setVao();
 
     // on initialise les matrices de transformation pour les shaders
     glm::mat4 ProjMatrix;
@@ -111,7 +126,7 @@ Interface::Interface()
     glm::mat4 NormalMatrix;
 
     ProjMatrix = glm::perspective(glm::radians(70.f), ctx.aspect_ratio(), 0.1f, 100.f);
-    Surveyor surveyor(kw);
+    Surveyor surveyor(turtle);
     bool     right = false;
     bool     left  = false;
     bool     up    = false;
@@ -195,7 +210,7 @@ Interface::Interface()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         skybox.drawModel(glm::vec3(0, 0, 0), glm::vec3(rayon_cube), MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, bakeSkybox, uTexture);
         flock.drawFlock3D(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, kw, bakesKw, uTexture);
-        surveyor.drawSurveyor(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, kw, bakeKw, uTexture);
+        surveyor.drawSurveyor(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, turtle, bakeTurtle, uTexture);
 
         // on debind le vao
         glBindVertexArray(0);
