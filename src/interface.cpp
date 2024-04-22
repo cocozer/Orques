@@ -14,7 +14,7 @@
 #include "tiny_obj_loader.h"
 
 Interface::Interface()
-    : ctx{{1280, 720, "Cher ImGui"}}, rayon_cube(0.3f), position_cercle(0, 0, 0), nombre_boids(10), taille_boids(0.03f), separation(0.01f), protected_range(0.1), alignement(0.05f), cohesion(0.001f), average_speed(0.01), turning_factor(0.01), fear_predator(0.001f), texte("Test")
+    : ctx{{1280, 720, "Cher ImGui"}}, rayon_cube(0.3f), nombre_boids(10), taille_boids(0.03f), separation(0.01f), alignement(0.05f), cohesion(0.001f), protected_range(0.1), average_speed(0.01), turning_factor(0.01), fear_predator(0.001f), texte("Test")
 {
     /*********************************
      * INITIALIZATION CODE
@@ -136,7 +136,6 @@ Interface::Interface()
         // Affiche une fenêtre simple
         ImGui::Begin("Test");
         ImGui::SliderFloat("Taille carrée", &rayon_cube, 0.f, 0.6f);
-        ImGui::SliderFloat3("Position cercle", glm::value_ptr(position_cercle), 0.f, 1.f);
         ImGui::SliderInt("Nombre de Boids", &nombre_boids, 0, 50);
         if (ImGui::IsItemEdited())
         {
@@ -152,11 +151,6 @@ Interface::Interface()
         {
             flock.setAvoidFactor(separation);
         }
-        ImGui::SliderFloat("Protected Range", &protected_range, 0.05f, 0.2f);
-        if (ImGui::IsItemEdited())
-        {
-            flock.setProtectedRange(protected_range);
-        }
         ImGui::SliderFloat("Alignement", &alignement, 0, 0.05f, "%.5f", 0.00001f);
         if (ImGui::IsItemEdited())
         {
@@ -166,6 +160,11 @@ Interface::Interface()
         if (ImGui::IsItemEdited())
         {
             flock.setCohesion(cohesion);
+        }
+        ImGui::SliderFloat("Protected Range", &protected_range, 0.05f, 0.2f);
+        if (ImGui::IsItemEdited())
+        {
+            flock.setProtectedRange(protected_range);
         }
         ImGui::SliderFloat("Average Speed", &average_speed, 0.0f, 0.02f);
         if (ImGui::IsItemEdited())

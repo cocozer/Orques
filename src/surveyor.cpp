@@ -121,11 +121,11 @@ void moveSurveyor(Surveyor& surveyor, bool& left, bool& right, bool& up, bool& d
     // Gestion des commandes de la caméra par le joueur
     if (right)
     {
-        surveyor.moveToLeft(-0.002f); // va à droite
+        surveyor.moveToLeft(-0.005f); // va à droite
     }
     if (left)
     {
-        surveyor.moveToLeft(+0.002f); // va à gauche
+        surveyor.moveToLeft(+0.005f); // va à gauche
     }
     if (up)
     {

@@ -16,13 +16,12 @@ public:
 
 private: // on déclare les variables membres de la classe Interface
     float        rayon_cube;
-    glm::vec3    position_cercle;
     int          nombre_boids;
     float        taille_boids;
     float        separation;
-    float        protected_range;
     float        alignement;
     float        cohesion;
+    float        protected_range;
     float        average_speed;
     float        turning_factor;
     float        fear_predator;
