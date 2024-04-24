@@ -225,6 +225,7 @@ Interface::Interface()
     };
     std::vector<glm::vec3> algPos    = randgen::generateAlgues(500, rayon_cube);
     std::vector<float>     algAngles = randgen::generateAngles(500);
+    glm::vec3              chestPos  = randgen::chest_pos(rayon_cube);
     ctx.update                       = [&]() {
         ctx.background({1, 0.5, 0.7, 1});
         ctx.square(p6::Center{}, p6::Radius{rayon_cube});
@@ -252,6 +253,7 @@ Interface::Interface()
         flock.drawFlock3D(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, kw, bakesKw, uTexture);
         surveyor.drawSurveyor(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, turtle, bakeTurtle, uTexture, left, right);
         randgen::drawAlgues(algPos, algAngles, MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, bakeAlg, uTexture, alg);
+        kw.drawModel(chestPos, glm::vec3(1), MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, bakeKwRed, uTexture);
         // on debind le vao
         glBindVertexArray(0);
     };

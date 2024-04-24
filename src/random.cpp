@@ -155,4 +155,27 @@ void chaine_markov(Boid& boid, glm::mat4 markovMat)
     }
 }
 
+double Beta(double alpha, double beta, int taille_cube) // renvoie un double selon la loi Beta, avec
+                                                        // l’algorithme de Jönk
+{
+    float a, b;
+    do
+    {
+        double u1 = Rand01();
+        double u2 = Rand01();
+        a         = std::pow(u1, 1 / alpha);
+        b         = std::pow(u2, 1 / beta);
+    } while (a + b > 1);
+    return (a / (a + b)) * (taille_cube * 4) - taille_cube * 2;
+}
+
+glm::vec3 chest_pos(float taille_cube)
+{
+    double chest_x, chest_z;
+    chest_x             = Beta(2, 5, taille_cube);
+    chest_z             = Beta(5, 1, taille_cube);
+    glm::vec3 chest_pos = {chest_x, -taille_cube * 2, chest_z};
+    return chest_pos;
+}
+
 } // namespace randgen

@@ -2,7 +2,6 @@
 #include <cassert>
 #include "glm/fwd.hpp"
 #include "random.hpp"
-#include "test_sphere.hpp"
 
 // blalalalala
 namespace boids {
@@ -69,11 +68,6 @@ void Flock::assert_index_is_valid(int index)
         assert(false);
     }
 }
-
-// const float Flock::GetTurnfactor() const
-// {
-//     return turn_factor;
-// }
 
 int Flock::NumBoids() const
 {
@@ -242,13 +236,9 @@ void Flock::ChangeStatesFlock()
     }
     timeSinceLastState = 0;
 }
-// void Boids::UpdateVelocities() {
-//     // À implémenter
-// }
 
 void Flock::Update(float limit)
 {
-    // MoveRandomly();
     Separation();
     Alignment();
     Cohesion();

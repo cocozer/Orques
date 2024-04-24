@@ -4,7 +4,6 @@
 #include "boid.hpp"
 #include "model.hpp"
 #include "random.hpp"
-#include "test_sphere.hpp"
 
 namespace boids {
 class Flock {
@@ -13,14 +12,14 @@ private:
     double            avoid_factor{0.001};      // separation
     double            matching_factor{0.00018}; // alignement
     double            centering_factor{0.0002}; // cohesion
-    double            turn_factor{0.005};
-    double            protected_range{3.5};
-    double            visible_range{13.0};
+    double            turn_factor{0.005};       // factor définissant combien le boid réagit quand il sort de la map
+    double            protected_range{3.5};     // distance de protection dans laquelle il va éviter les autres boids
+    double            visible_range{13.0};      // distance de visibilité dans laquelle il va s'aligner et se rapprocher des autres boids
     double            min_speed{0.05};
     double            max_speed{0.1};
-    double            fear_predator{0.01};
-    int               timeSinceLastState = 0;
-    int               poissonGen;
+    double            fear_predator{0.01};    // facteur de réaction à la vue du prédateur
+    int               timeSinceLastState = 0; // temps depuis le dernier changement d'état des boids
+    int               poissonGen;             // loi de poisson pour définir combien de fois en 1000 frames les boids vont changer d'état (moyenne = 3)
 
 public:
     // Flock();

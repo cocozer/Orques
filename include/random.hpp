@@ -29,8 +29,11 @@ double UniformeDouble(double min, double max);
 
 double Exponentielle(double min, double max, double lambda);
 
+double Beta(double alpha, double beta, int taille_cube);
+
 double                 Normale(double esperance, double ecarttype);
 glm::vec3              algue_pos(float taille_cube);
+glm::vec3              chest_pos(float taille_cube);
 std::vector<glm::vec3> generateAlgues(int num_algue, float taille_cube);
 void                   drawAlgues(std::vector<glm::vec3> algPos, std::vector<float> algAngle, glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, GLuint bakedAlgue, GLint uTexture, Model& model);
 std::vector<float>     generateAngles(int num_algue);

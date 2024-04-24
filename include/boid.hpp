@@ -11,8 +11,7 @@ private:
     float     size;
     glm::vec3 pos;
     glm::vec3 velocity;
-    glm::vec3 acceleration;
-    int       state;
+    int       state; // State of the boid (0 = normal, 1 = blue, 2 = green, 3 = red and predator)
 
 public:
     Boid();
