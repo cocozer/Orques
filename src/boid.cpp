@@ -5,7 +5,7 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "p6/p6.h"
 
-// blalalalala
+// changement
 Boid::Boid()
     : size(0.4), pos(0.0, 0.0, -5.0f), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), state(0)
 {}

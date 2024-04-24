@@ -1,5 +1,5 @@
 #pragma once
-// blalalalala
+
 #include <vector>
 #include "boid.hpp"
 #include "model.hpp"
@@ -9,15 +9,15 @@
 namespace boids {
 class Flock {
 private:
-    std::vector<Boid> flock;               // Vecteur de boids
-    double            avoid_factor{0.005}; // separation
-    double            matching_factor{0.005};
-    double            centering_factor{0.015};
-    double            turn_factor{0.0005};
-    double            protected_range{0.15};
-    double            visible_range{0.3};
-    double            min_speed{0.005};
-    double            max_speed{0.01};
+    std::vector<Boid> flock;                    // Vecteur de boids
+    double            avoid_factor{0.001};      // separation
+    double            matching_factor{0.00018}; // alignement
+    double            centering_factor{0.0002}; // cohesion
+    double            turn_factor{0.005};
+    double            protected_range{3.5};
+    double            visible_range{13.0};
+    double            min_speed{0.05};
+    double            max_speed{0.1};
     double            fear_predator{0.01};
 
 public:
@@ -44,6 +44,7 @@ public:
     void setAvoidFactor(float factor);
     // protection range :
     void setProtectedRange(float factor);
+    void setVisibleRange(float factor);
     void setAlignement(float factor);
     void setCohesion(float factor);
     void setAverageSpeed(float factor);

@@ -9,18 +9,19 @@
 #include "glm/fwd.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "img/src/Image.h"
+#include "light.hpp"
 #include "p6/p6.h"
 #include "surveyor.hpp"
 #include "tiny_obj_loader.h"
 
 Interface::Interface()
-    : ctx{{1280, 720, "Cher ImGui"}}, rayon_cube(0.3f), nombre_boids(10), taille_boids(0.03f), separation(0.01f), alignement(0.05f), cohesion(0.001f), protected_range(0.1), average_speed(0.01), turning_factor(0.01), fear_predator(0.001f), texte("Test")
+    : ctx{{1280, 720, "Cher ImGui"}}, rayon_cube(15.0f), nombre_boids(10), taille_boids(0.1f), separation(0.001f), alignement(0.00018f), cohesion(0.0002f), protected_range(3.5), visible_range(13), average_speed(0.01), turning_factor(0.005), fear_predator(0.001f), texte("Test")
 {
     /*********************************
      * INITIALIZATION CODE
      *********************************/
     // on charge les shaders
-    p6::Shader shader = p6::load_shader("../shaders/3D.vs.glsl", "../shaders/textures3d.fs.glsl");
+    p6::Shader shader = p6::load_shader("../shaders/3D.vs.glsl", "../shaders/light.fs.glsl");
 
     // on charge les images
     img::Image img_kw      = p6::load_image_buffer("../assets/textures/Kw.png");
@@ -117,7 +118,16 @@ Interface::Interface()
     GLint uMVMatrix     = glGetUniformLocation(shader.id(), "uMVMatrix");
     GLint uNormalMatrix = glGetUniformLocation(shader.id(), "uNormalMatrix");
 
-    // recup var uniforme texture
+    // light
+    GLint uKd              = glGetUniformLocation(shader.id(), "uKd");
+    GLint uKs              = glGetUniformLocation(shader.id(), "uKs");
+    GLint uShininess       = glGetUniformLocation(shader.id(), "uShininess");
+    GLint uLightPos_vs     = glGetUniformLocation(shader.id(), "uLightPos_vs");
+    GLint uLightIntensity  = glGetUniformLocation(shader.id(), "uLightIntensity");
+    GLint uLightPos2_vs    = glGetUniformLocation(shader.id(), "uLightPos2_vs");
+    GLint uLightIntensity2 = glGetUniformLocation(shader.id(), "uLightIntensity2");
+
+    //  recup var uniforme texture
     GLint uTexture = glGetUniformLocation(shader.id(), "uText");
     if (uTexture == -1)
     {
@@ -132,52 +142,59 @@ Interface::Interface()
     bool     up    = false;
     bool     down  = false;
 
+    Light lightScene    = Light(glm::vec3{350.});
+    Light lightSurveyor = Light(glm::vec3{0.01});
+
     ctx.imgui = [&]() {
         // Affiche une fenêtre simple
         ImGui::Begin("Test");
-        ImGui::SliderFloat("Taille carrée", &rayon_cube, 0.f, 0.6f);
         ImGui::SliderInt("Nombre de Boids", &nombre_boids, 0, 50);
         if (ImGui::IsItemEdited())
         {
             setNumberOfBoids(nombre_boids);
         }
-        ImGui::SliderFloat("Taille des Boids", &taille_boids, 0.015f, 0.1f);
+        ImGui::SliderFloat("Taille des Boids", &taille_boids, 0.1f, 0.4f);
         if (ImGui::IsItemEdited())
         {
             flock.UpdateBoidSize(taille_boids);
         }
-        ImGui::SliderFloat("Separation", &separation, 0.0f, 0.03f);
+        ImGui::SliderFloat("Separation", &separation, 0.0f, 0.01f);
         if (ImGui::IsItemEdited())
         {
             flock.setAvoidFactor(separation);
         }
-        ImGui::SliderFloat("Alignement", &alignement, 0, 0.05f, "%.5f", 0.00001f);
+        ImGui::SliderFloat("Alignement", &alignement, 0, 0.001f, "%.5f", 0.00001f);
         if (ImGui::IsItemEdited())
         {
             flock.setAlignement(alignement);
         }
-        ImGui::SliderFloat("Cohésion", &cohesion, 0, 0.005f, "%.5f", 0.00001f);
+        ImGui::SliderFloat("Cohésion", &cohesion, 0, 0.001f, "%.5f", 0.00001f);
         if (ImGui::IsItemEdited())
         {
             flock.setCohesion(cohesion);
         }
-        ImGui::SliderFloat("Protected Range", &protected_range, 0.05f, 0.2f);
+        ImGui::SliderFloat("Protected Range", &protected_range, 2.f, 4.f);
         if (ImGui::IsItemEdited())
         {
             flock.setProtectedRange(protected_range);
         }
-        ImGui::SliderFloat("Average Speed", &average_speed, 0.0f, 0.02f);
+        ImGui::SliderFloat("Visible Range", &visible_range, 7.f, 13.f);
+        if (ImGui::IsItemEdited())
+        {
+            flock.setVisibleRange(visible_range);
+        }
+        ImGui::SliderFloat("Average Speed", &average_speed, 0.0f, 0.50f);
         if (ImGui::IsItemEdited())
         {
             flock.setAverageSpeed(average_speed);
         }
-        ImGui::SliderFloat("Turning Factor", &turning_factor, 0.0f, 0.01f);
+        ImGui::SliderFloat("Turning Factor", &turning_factor, 0.005f, 0.01f);
         if (ImGui::IsItemEdited())
         {
             flock.setTurningFactor(turning_factor);
         }
         // avoid predators-------------------------------
-        ImGui::SliderFloat("Avoid Predator", &fear_predator, 0.0f, 0.01f);
+        ImGui::SliderFloat("Avoid Predator", &fear_predator, 0.0f, 5.0f);
         if (ImGui::IsItemEdited())
         {
             flock.setAvoidPredator(fear_predator);
@@ -205,7 +222,12 @@ Interface::Interface()
         // config du shader
         shader.use();
 
-        // on utilise le shader
+        // light
+        lightScene.drawLightScene(glm::vec3(0.f, 20.f, 10.f), ProjMatrix, MVMatrix, uMVPMatrix, uMVMatrix, uNormalMatrix, shader, uKd, uKs, uShininess, uLightPos_vs, uLightIntensity);
+        // lightScene2.drawLightScene(glm::vec3(0.f, 20.f, 15.f), ProjMatrix, MVMatrix, uMVPMatrix, uMVMatrix, uNormalMatrix, shader, uKd, uKs, uShininess, uLightPos_vs, uLightIntensity);
+        lightSurveyor.drawLightSurveyor(surveyor.getPosition(), ProjMatrix, MVMatrix, uMVPMatrix, uMVMatrix, uNormalMatrix, uLightPos2_vs, uLightIntensity2);
+
+        //  on utilise le shader
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         skybox.drawModel(glm::vec3(0, 0, 0), glm::vec3(rayon_cube), MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, bakeSkybox, uTexture);
         flock.drawFlock3D(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, kw, bakesKw, uTexture);

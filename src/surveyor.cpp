@@ -9,7 +9,7 @@
 
 //---Camera---
 Surveyor::Surveyor(Model& model)
-    : m_cam_position(glm::vec3(0., 0., 0.)), m_phi(p6::PI), m_theta(0.), m_rotation_angle(0.), m_model(model), m_cam_distance(0.5f), m_cam_height(0.2f)
+    : m_cam_position(glm::vec3(0., -1., 0.)), m_phi(p6::PI), m_theta(0.), m_rotation_angle(0.), m_model(model), m_cam_distance(0.5f), m_cam_height(0.2f)
 {
     this->setDirectionVectors();
 }
@@ -89,8 +89,8 @@ void Surveyor::drawSurveyor(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatri
 {
     // Configuration des matrices de transformation et envoi au shader
     MVMatrix = glm::translate(MVMatrix, m_cam_position);
-    MVMatrix = glm::translate(MVMatrix, glm::vec3(0, 0.15, 0.2));
-    MVMatrix = glm::scale(MVMatrix, glm::vec3(0.05, 0.05, 0.05));
+    MVMatrix = glm::translate(MVMatrix, glm::vec3(0, -2.15, -5.0f));
+    MVMatrix = glm::scale(MVMatrix, glm::vec3(1.5f, 1.5f, 1.5f));
     MVMatrix = glm::rotate(MVMatrix, m_theta / 3, glm::vec3(1.0f, 0.0f, 0.0f));
     MVMatrix = glm::rotate(MVMatrix, m_phi, glm::vec3(0.0f, 1.0f, 0.0f));
     if (left)
@@ -121,19 +121,19 @@ void moveSurveyor(Surveyor& surveyor, bool& left, bool& right, bool& up, bool& d
     // Gestion des commandes de la caméra par le joueur
     if (right)
     {
-        surveyor.moveToLeft(-0.005f); // va à droite
+        surveyor.moveToLeft(-0.09f); // va à droite
     }
     if (left)
     {
-        surveyor.moveToLeft(+0.005f); // va à gauche
+        surveyor.moveToLeft(+0.09f); // va à gauche
     }
     if (up)
     {
-        surveyor.moveToFront(0.005f); // avance
+        surveyor.moveToFront(0.09f); // avance
     }
     if (down)
     {
-        surveyor.moveToFront(-0.005f); // recule
+        surveyor.moveToFront(-0.09f); // recule
     }
 
     ctx.key_pressed = [&right, &up, &left, &down](p6::Key key) { // avancer avec les touches zqsd
