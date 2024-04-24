@@ -6,7 +6,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/matrix.hpp"
-
+#include "random.hpp"
 // utiliser la librairie tinyobj
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
@@ -98,6 +98,30 @@ void Model::drawModel(glm::vec3 position, glm::vec3 scale, glm::mat4 MVMatrix, G
     glm::mat4 ViewMatrixModel = glm::translate(glm::mat4(1.0), position);
     ViewMatrixModel           = glm::scale(ViewMatrixModel, scale);
     MVMatrix                  = MVMatrix * ViewMatrixModel;
+
+    NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
+
+    glUniform1i(uTextureName, 0);
+    // on bind les matrices au shader
+    glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+    glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+    glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+
+    glBindTexture(GL_TEXTURE_2D, bakedTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    // on dessine notre cube
+    draw();
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Model::drawAlg(glm::vec3 position, float angle, glm::vec3 scale, glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, GLuint bakedTexture, GLint uTextureName)
+{
+    glm::mat4 ViewMatrixModel = glm::translate(glm::mat4(1.0), position);
+    ViewMatrixModel           = glm::scale(ViewMatrixModel, scale);
+    ViewMatrixModel           = glm::rotate(ViewMatrixModel, angle, glm::vec3(0.0f, 1.0f, 0.0f));
+
+    MVMatrix = MVMatrix * ViewMatrixModel;
 
     NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 

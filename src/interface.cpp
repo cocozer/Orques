@@ -11,6 +11,7 @@
 #include "img/src/Image.h"
 #include "light.hpp"
 #include "p6/p6.h"
+#include "random.hpp"
 #include "surveyor.hpp"
 #include "tiny_obj_loader.h"
 
@@ -30,7 +31,9 @@ Interface::Interface()
     img::Image img_kwRed   = p6::load_image_buffer("../assets/textures/KwRed.png");
     img::Image img_water   = p6::load_image_buffer("../assets/textures/water_texture.png");
     img::Image img_turtle  = p6::load_image_buffer("../assets/textures/turtleBaked.png");
-    Model      kw          = Model();
+    img::Image img_alg     = p6::load_image_buffer("../assets/textures/alg_texture.png");
+
+    Model kw = Model();
     kw.loadModel("kw.obj");
 
     Model skybox = Model();
@@ -38,6 +41,9 @@ Interface::Interface()
 
     Model turtle = Model();
     turtle.loadModel("arpenteur.obj");
+
+    Model alg = Model();
+    alg.loadModel("alg.obj");
 
     GLuint bakeTurtle = 0;
     glGenTextures(1, &bakeTurtle);
@@ -95,10 +101,20 @@ Interface::Interface()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
 
+    GLuint bakeAlg = 0;
+    glGenTextures(1, &bakeAlg);
+    glBindTexture(GL_TEXTURE_2D, bakeAlg);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_alg.width(), img_alg.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img_alg.data());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     // on bind le vbo de l'orque 3D
     kw.setVbo();
     skybox.setVbo();
     turtle.setVbo();
+    alg.setVbo();
 
     // on active le test de profondeur
     glEnable(GL_DEPTH_TEST);
@@ -107,6 +123,7 @@ Interface::Interface()
     kw.setVao();
     skybox.setVao();
     turtle.setVao();
+    alg.setVao();
 
     // on initialise les matrices de transformation pour les shaders
     glm::mat4 ProjMatrix;
@@ -206,8 +223,9 @@ Interface::Interface()
         // Affiche la fenêtre de démonstration officielle d'ImGui
         ImGui::ShowDemoWindow();
     };
-
-    ctx.update = [&]() {
+    std::vector<glm::vec3> algPos    = randgen::generateAlgues(500, rayon_cube);
+    std::vector<float>     algAngles = randgen::generateAngles(500);
+    ctx.update                       = [&]() {
         ctx.background({1, 0.5, 0.7, 1});
         ctx.square(p6::Center{}, p6::Radius{rayon_cube});
         flock.Update(rayon_cube);
@@ -232,7 +250,7 @@ Interface::Interface()
         skybox.drawModel(glm::vec3(0, 0, 0), glm::vec3(rayon_cube), MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, bakeSkybox, uTexture);
         flock.drawFlock3D(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, kw, bakesKw, uTexture);
         surveyor.drawSurveyor(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, turtle, bakeTurtle, uTexture, left, right);
-
+        randgen::drawAlgues(algPos, algAngles, MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, bakeAlg, uTexture, alg);
         // on debind le vao
         glBindVertexArray(0);
     };

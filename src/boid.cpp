@@ -4,6 +4,7 @@
 #include "glm/geometric.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "p6/p6.h"
+#include "random.hpp"
 
 // changement
 Boid::Boid()

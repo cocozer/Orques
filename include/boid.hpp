@@ -4,7 +4,7 @@
 #include "glm/glm.hpp"
 #include "model.hpp"
 #include "p6/p6.h"
-#include "random.hpp"
+
 // blalalalala
 class Boid {
 private:

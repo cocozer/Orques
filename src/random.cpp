@@ -1,5 +1,7 @@
 #include "random.hpp"
 #include "glm/fwd.hpp"
+#include "glm/glm.hpp"
+#include "model.hpp"
 
 namespace randgen {
 
@@ -61,57 +63,102 @@ double Normale(double esperance, double ecarttype) // renvoie un double selon la
     return sample;
 }
 
-glm::vec2 algue_pos(float taille_cube)
+glm::vec3 algue_pos(float taille_cube)
 {
     double algue_x, algue_z;
-    algue_x             = Normale(taille_cube / 2, taille_cube / 5);
-    algue_z             = Normale(taille_cube / 2, taille_cube / 5);
-    glm::vec2 algue_pos = {algue_x, algue_z};
+    algue_x             = Normale(0, taille_cube * 4 / 5);
+    algue_z             = Normale(0, taille_cube * 4 / 5);
+    glm::vec3 algue_pos = {algue_x, -taille_cube * 2, algue_z};
     return algue_pos;
 }
 
-void markov_suivant(int actual_state, glm::vec4 v)
+std::vector<glm::vec3> generateAlgues(int num_algue, float taille_cube)
 {
-    float a = Rand01();
-    if (a < v[0])
+    std::vector<glm::vec3> algPos;
+    for (int i = 0; i < num_algue; i++)
     {
-        actual_state = 0;
+        glm::vec3 algue_pos = randgen::algue_pos(taille_cube);
+        algPos.push_back(algue_pos);
     }
-    else if (a < v[0] + v[1])
+    return algPos;
+}
+
+std::vector<float> generateAngles(int num_algue)
+{
+    std::vector<float> algAngles;
+    for (int i = 0; i < num_algue; i++)
     {
-        actual_state = 1;
+        float algue_angle = randgen::UniformeDouble(0.0, 2.0 * M_PI);
+        algAngles.push_back(algue_angle);
     }
-    else if (a < v[0] + v[1] + v[2])
+    return algAngles;
+}
+
+void drawAlgues(std::vector<glm::vec3> algPos, std::vector<float> algAngle, glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, GLuint bakedAlgue, GLint uTexture, Model& model)
+{
+    for (int i = 0; i < algPos.size(); i++)
     {
-        actual_state = 2;
-    }
-    else if (a < v[0] + v[1] + v[2] + v[3])
-    {
-        actual_state = 3;
-    }
-    else
-    {
-        actual_state = 4;
+        model.drawAlg(algPos[i], algAngle[i], glm::vec3(1), MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, bakedAlgue, uTexture);
     }
 }
 
-void chaine_markov(int actual_state, glm::mat4 markovMat)
+double Exponentielle(double min, double max, double lambda) // génération d'un float selon loi exponentielle avec la méthode de l'inverse de la fonction de répartition
 {
-    switch (actual_state)
-    {
-    case 0:
-        markov_suivant(actual_state, markovMat[0]);
-        break;
-    case 1:
-        markov_suivant(actual_state, markovMat[1]);
-        break;
-    case 2:
-        markov_suivant(actual_state, markovMat[2]);
-        break;
-    case 3:
-        markov_suivant(actual_state, markovMat[3]);
-        break;
-    }
+    double u1 = Rand01();
+    double u2 = -log(1 - u1) / lambda;
+    return min + (max - min) * u2;
 }
+
+// void markov_suivant(Boid& boid, glm::vec4 v)
+// {
+//     float a = Rand01();
+//     if (a < v[0])
+//     {
+//         boid.setState(0);
+//     }
+//     else if (a < v[0] + v[1])
+//     {
+//         boid.setState(1);
+//     }
+//     else if (a < v[0] + v[1] + v[2])
+//     {
+//         boid.setState(2);
+//     }
+//     else if (a < v[0] + v[1] + v[2] + v[3])
+//     {
+//         boid.setState(3);
+//     }
+//     else
+//     {
+//         boid.setState(4);
+//     }
+// }
+
+// void chaine_markov(Boid& boid, glm::mat4 markovMat)
+// {
+//     switch (boid.getState())
+//     {
+//     case 0:
+//         markov_suivant(boid, markovMat[0]);
+//         break;
+//     case 1:
+//         markov_suivant(boid, markovMat[1]);
+//         break;
+//     case 2:
+//         markov_suivant(boid, markovMat[2]);
+//         break;
+//     case 3:
+//         markov_suivant(boid, markovMat[3]);
+//         break;
+//     }
+// }
+
+// void changeBoidState(boids::Flock flock, p6::Context ctx)
+// {
+//     for (const Boid& boid : flock)
+//     {
+//         chaine_markov(boid, markovMat);
+//     }
+// }
 
 } // namespace randgen
