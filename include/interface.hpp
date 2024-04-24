@@ -15,17 +15,18 @@ public:
     p6::Context ctx;
 
 private: // on déclare les variables membres de la classe Interface
-    float        rayon_cube;
-    glm::vec3    position_cercle;
-    int          nombre_boids;
-    float        taille_boids;
-    float        separation;
-    float        protected_range;
-    float        alignement;
-    float        cohesion;
-    float        average_speed;
-    float        turning_factor;
-    float        fear_predator;
+    float rayon_cube;
+    int   nombre_boids;
+    float taille_boids;
+    float separation;
+    float alignement;
+    float cohesion;
+    float protected_range;
+    float visible_range;
+    float average_speed;
+    float turning_factor;
+    float fear_predator;
+
     std::string  texte;
     boids::Flock flock;
 };

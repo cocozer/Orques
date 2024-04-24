@@ -1,4 +1,3 @@
-
 #include "flock.hpp"
 #include <cassert>
 #include "glm/fwd.hpp"
@@ -260,6 +259,10 @@ void Flock::setAvoidFactor(float factor)
 void Flock::setProtectedRange(float factor)
 {
     protected_range = static_cast<double>(factor);
+}
+void Flock::setVisibleRange(float factor)
+{
+    visible_range = static_cast<double>(factor);
 }
 
 void Flock::setAlignement(float factor)

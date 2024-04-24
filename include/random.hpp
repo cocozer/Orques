@@ -8,9 +8,6 @@
 #include <thread>
 #include <vector>
 #include "glm/glm.hpp"
-#include "flock.hpp"
-#include "boid.hpp"
-#include "model.hpp"
 
 namespace randgen {
 
@@ -27,24 +24,11 @@ int           Poisson(double lambda);
 int    UniformeDouble(int min, int max);
 double UniformeDouble(double min, double max);
 
-double Exponentielle(double min, double max, double lambda);
-
 double    Normale(double esperance, double ecarttype);
-glm::vec3 algue_pos(float taille_cube);
+glm::vec2 algue_pos(float taille_cube);
 
-// void markov_suivant(Boid& boid, glm::vec4 v);
-// void chaine_markov(Boid& boid, glm::mat4 markovMat);
-// void changeBoidState(boids::Flock flock, p6::Context ctx);
-
-// int initial_state = 0; 
-
-// glm::mat4 markovMat = glm::mat4(
-//     glm::vec4(0.30f, 0.30f, 0.30f, 0.10f),
-//     glm::vec4(0.30f, 0.30f, 0.30f, 0.10f),
-//     glm::vec4(0.30f, 0.30f, 0.30f, 0.10f),
-//     glm::vec4(0.10f, 0.10f, 0.10f, 0.70f)
-// );
-
-
+// glm::mat4 markovMat; // + il faut definir les probas
+void markov_suivant(int actual_state, glm::vec4 v);
+void chaine_markov(int actual_state, glm::mat4 markovMat);
 
 } // namespace randgen

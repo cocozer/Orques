@@ -1,7 +1,5 @@
 #include "random.hpp"
 #include "glm/fwd.hpp"
-#include "glm/glm.hpp"
-#include "model.hpp"
 
 namespace randgen {
 
@@ -63,80 +61,57 @@ double Normale(double esperance, double ecarttype) // renvoie un double selon la
     return sample;
 }
 
-glm::vec3 algue_pos(float taille_cube)
+glm::vec2 algue_pos(float taille_cube)
 {
     double algue_x, algue_z;
-    algue_x             = Normale(taille_cube * 2 / 2, taille_cube * 2 / 5);
-    algue_z             = Normale(taille_cube * 2 / 2, taille_cube * 2 / 5);
-    glm::vec3 algue_pos = {algue_x, 0, algue_z};
+    algue_x             = Normale(taille_cube / 2, taille_cube / 5);
+    algue_z             = Normale(taille_cube / 2, taille_cube / 5);
+    glm::vec2 algue_pos = {algue_x, algue_z};
     return algue_pos;
 }
 
-void generateAlgues(int num_algue, float taille_cube, glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, GLuint bakedAlgue, GLint uTexture, Model& model)
+void markov_suivant(int actual_state, glm::vec4 v)
 {
-    for (int i = 0; i < num_algue; i++)
+    float a = Rand01();
+    if (a < v[0])
     {
-        model.drawModel(algue_pos(taille_cube), glm::vec3(1), MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, bakedAlgue, uTexture);
+        actual_state = 0;
+    }
+    else if (a < v[0] + v[1])
+    {
+        actual_state = 1;
+    }
+    else if (a < v[0] + v[1] + v[2])
+    {
+        actual_state = 2;
+    }
+    else if (a < v[0] + v[1] + v[2] + v[3])
+    {
+        actual_state = 3;
+    }
+    else
+    {
+        actual_state = 4;
     }
 }
 
-double Exponentielle(double min, double max, double lambda) // génération d'un float selon loi exponentielle avec la méthode de l'inverse de la fonction de répartition
+void chaine_markov(int actual_state, glm::mat4 markovMat)
 {
-    double u1 = Rand01();
-    double u2 = -log(1 - u1) / lambda;
-    return min + (max - min) * u2;
+    switch (actual_state)
+    {
+    case 0:
+        markov_suivant(actual_state, markovMat[0]);
+        break;
+    case 1:
+        markov_suivant(actual_state, markovMat[1]);
+        break;
+    case 2:
+        markov_suivant(actual_state, markovMat[2]);
+        break;
+    case 3:
+        markov_suivant(actual_state, markovMat[3]);
+        break;
+    }
 }
-
-// void markov_suivant(Boid& boid, glm::vec4 v)
-// {
-//     float a = Rand01();
-//     if (a < v[0])
-//     {
-//         boid.setState(0);
-//     }
-//     else if (a < v[0] + v[1])
-//     {
-//         boid.setState(1);
-//     }
-//     else if (a < v[0] + v[1] + v[2])
-//     {
-//         boid.setState(2);
-//     }
-//     else if (a < v[0] + v[1] + v[2] + v[3])
-//     {
-//         boid.setState(3);
-//     }
-//     else
-//     {
-//         boid.setState(4);
-//     }
-// }
-
-// void chaine_markov(Boid& boid, glm::mat4 markovMat)
-// {
-//     switch (boid.getState())
-//     {
-//     case 0:
-//         markov_suivant(boid, markovMat[0]);
-//         break;
-//     case 1:
-//         markov_suivant(boid, markovMat[1]);
-//         break;
-//     case 2:
-//         markov_suivant(boid, markovMat[2]);
-//         break;
-//     case 3:
-//         markov_suivant(boid, markovMat[3]);
-//         break;
-//     }
-// }
-
-// void changeBoidState(boids::Flock flock, p6::Context ctx)
-// {
-//     for (const Boid& boid : flock)
-//     {
-//         chaine_markov(boid, markovMat);
-//     }
-// }
 
 } // namespace randgen
