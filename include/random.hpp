@@ -10,6 +10,7 @@
 #include "glm/glm.hpp"
 #include "flock.hpp"
 #include "boid.hpp"
+#include "model.hpp"
 
 namespace randgen {
 
@@ -29,11 +30,11 @@ double UniformeDouble(double min, double max);
 double Exponentielle(double min, double max, double lambda);
 
 double    Normale(double esperance, double ecarttype);
-glm::vec2 algue_pos(float taille_cube);
+glm::vec3 algue_pos(float taille_cube);
 
-void markov_suivant(Boid& boid, glm::vec4 v);
-void chaine_markov(Boid& boid, glm::mat4 markovMat);
-void changeBoidState(boids::Flock flock, p6::Context ctx);
+// void markov_suivant(Boid& boid, glm::vec4 v);
+// void chaine_markov(Boid& boid, glm::mat4 markovMat);
+// void changeBoidState(boids::Flock flock, p6::Context ctx);
 
 int initial_state = 0; 
 
