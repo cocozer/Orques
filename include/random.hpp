@@ -36,14 +36,14 @@ glm::vec3 algue_pos(float taille_cube);
 // void chaine_markov(Boid& boid, glm::mat4 markovMat);
 // void changeBoidState(boids::Flock flock, p6::Context ctx);
 
-int initial_state = 0; 
+// int initial_state = 0; 
 
-glm::mat4 markovMat = glm::mat4(
-    glm::vec4(0.30f, 0.30f, 0.30f, 0.10f),
-    glm::vec4(0.30f, 0.30f, 0.30f, 0.10f),
-    glm::vec4(0.30f, 0.30f, 0.30f, 0.10f),
-    glm::vec4(0.10f, 0.10f, 0.10f, 0.70f)
-);
+// glm::mat4 markovMat = glm::mat4(
+//     glm::vec4(0.30f, 0.30f, 0.30f, 0.10f),
+//     glm::vec4(0.30f, 0.30f, 0.30f, 0.10f),
+//     glm::vec4(0.30f, 0.30f, 0.30f, 0.10f),
+//     glm::vec4(0.10f, 0.10f, 0.10f, 0.70f)
+// );
 
 
 
