@@ -24,6 +24,8 @@ int           Poisson(double lambda);
 int    UniformeDouble(int min, int max);
 double UniformeDouble(double min, double max);
 
+double Exponentielle(double min, double max, double lambda);
+
 double    Normale(double esperance, double ecarttype);
 glm::vec2 algue_pos(float taille_cube);
 

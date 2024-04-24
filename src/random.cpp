@@ -70,6 +70,13 @@ glm::vec2 algue_pos(float taille_cube)
     return algue_pos;
 }
 
+double Exponentielle(double min, double max, double lambda) // génération d'un float selon loi exponentielle avec la méthode de l'inverse de la fonction de répartition
+{
+    double u1 = Rand01();
+    double u2 = -log(1 - u1) / lambda;
+    return min + (max - min) * u2;
+}
+
 void markov_suivant(int actual_state, glm::vec4 v)
 {
     float a = Rand01();
