@@ -13,7 +13,7 @@ namespace boids {
 // }
 
 Flock::Flock(int n)
-    : flock(n)
+    : flock(n), poissonGen(randgen::Poisson(3))
 {
 }
 
@@ -223,10 +223,11 @@ void Flock::CheckOverflow(float limit)
 void Flock::ChangeStatesFlock()
 {
     timeSinceLastState += 1;
-    if (timeSinceLastState < 500)
+    if (timeSinceLastState < 1000 / poissonGen)
     {
         return;
     }
+    poissonGen = randgen::Poisson(3);
 
     glm::mat4 markovMat = glm::mat4(
         glm::vec4(0.30f, 0.30f, 0.30f, 0.10f),

@@ -20,6 +20,7 @@ private:
     double            max_speed{0.1};
     double            fear_predator{0.01};
     int               timeSinceLastState = 0;
+    int               poissonGen;
 
 public:
     // Flock();
