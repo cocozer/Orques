@@ -1,4 +1,5 @@
 #include "boid.hpp"
+#include "glm/common.hpp"
 #include "glm/fwd.hpp"
 #include "glm/geometric.hpp"
 #include "glm/gtc/type_ptr.hpp"
@@ -6,19 +7,19 @@
 
 // blalalalala
 Boid::Boid()
-    : size(0.02), pos(0.0, 0.0, 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), state(0)
+    : size(0.4), pos(0.0, 0.0, -5.0f), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), state(0)
 {}
 
 Boid::Boid(const float& x, const float& y, const float& z)
-    : size(0.02), pos(x, y, z), velocity(0.0, 0.0, 0.0), state(0)
+    : size(0.4), pos(x, y, z), velocity(0.0, 0.0, 0.0), state(0)
 {}
 
 Boid::Boid(float aspectRatio)
-    : size(0.2), pos(p6::random::number(-aspectRatio, aspectRatio), p6::random::number(-1, 1), 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), state(0)
+    : size(0.4), pos(p6::random::number(-aspectRatio, aspectRatio), p6::random::number(-1, 1), 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), state(0)
 {
 }
 Boid::Boid(int state)
-    : size(0.02), pos(0.0, 0.0, 0.0), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), state(state)
+    : size(0.4), pos(0.0, 0.0, -5.0f), velocity(randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025, randgen::Rand01() / 200 - 0.0025), state(state)
 {}
 void Boid::drawBoid(p6::Context& ctx) const
 {
@@ -35,7 +36,7 @@ void Boid::drawBoid3D(glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm
 
     if (getState() == 3)
     {
-        ViewMatrixModel = glm::scale(ViewMatrixModel, glm::vec3(getSize() * 3));
+        ViewMatrixModel = glm::scale(ViewMatrixModel, glm::vec3(getSize() * 2));
     }
     else
     {
@@ -134,29 +135,30 @@ void Boid::clampSpeed(double max_speed, double min_speed)
 
 void Boid::checkOverflow(float limit, float turnfactor)
 {
-    if (pos.x < -limit + 2 * size)
+    float coeff = 0.99f + (glm::abs(glm::max(glm::max(getVel().x, getVel().y), getVel().z))) * 75;
+    if (pos.x < -2 * limit + 3 * size)
     {
-        velocity.x += turnfactor;
+        velocity.x += turnfactor * coeff;
     }
-    if (pos.x > limit - 2 * size)
+    if (pos.x > 2 * limit - 3 * size)
     {
-        velocity.x -= turnfactor;
+        velocity.x -= turnfactor * coeff;
     }
-    if (pos.y > limit - 2 * size)
+    if (pos.y > 2 * limit - 3 * size)
     {
-        velocity.y -= turnfactor;
+        velocity.y -= turnfactor * coeff;
     }
-    if (pos.y < -limit + 2 * size)
+    if (pos.y < -2 * limit + 3 * size)
     {
-        velocity.y += turnfactor;
+        velocity.y += turnfactor * coeff;
     }
-    if (pos.z > limit - 2 * size)
+    if (pos.z > 2 * limit - 3 * size)
     {
-        velocity.z -= turnfactor;
+        velocity.z -= turnfactor * coeff;
     }
-    if (pos.z < -limit + 2 * size)
+    if (pos.z < -2 * limit + 3 * size)
     {
-        velocity.z += turnfactor;
+        velocity.z += turnfactor * coeff;
     }
 }
 
