@@ -164,7 +164,7 @@ Interface::Interface()
 
     ctx.imgui = [&]() {
         // Affiche une fenêtre simple
-        ImGui::Begin("Test");
+        ImGui::Begin("Parametres");
         ImGui::SliderInt("Nombre de Boids", &nombre_boids, 0, 50);
         if (ImGui::IsItemEdited())
         {

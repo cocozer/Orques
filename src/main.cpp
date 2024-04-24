@@ -1,7 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 #include <p6/p6.h>
 #include <interface.hpp>
-#include <test_sphere.hpp>
 #include "doctest/doctest.h"
 
 int main()
