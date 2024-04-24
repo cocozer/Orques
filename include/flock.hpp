@@ -17,9 +17,10 @@ private:
     double            visible_range{13.0};      // distance de visibilité dans laquelle il va s'aligner et se rapprocher des autres boids
     double            min_speed{0.05};
     double            max_speed{0.1};
-    double            fear_predator{0.01};    // facteur de réaction à la vue du prédateur
-    int               timeSinceLastState = 0; // temps depuis le dernier changement d'état des boids
-    int               poissonGen;             // loi de poisson pour définir combien de fois en 1000 frames les boids vont changer d'état (moyenne = 3)
+    double            fear_predator{0.01};       // facteur de réaction à la vue du prédateur
+    int               timeSinceLastState = 0;    // temps depuis le dernier changement d'état des boids
+    int               poissonGen;                // loi de poisson pour définir combien de fois en 1000 frames les boids vont changer d'état (moyenne = 3)
+    int               stateChangeDuringTime = 0; // nombre de changements d'état pendant 1000 frames
 
 public:
     // Flock();

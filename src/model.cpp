@@ -115,7 +115,7 @@ void Model::drawModel(glm::vec3 position, glm::vec3 scale, glm::mat4 MVMatrix, G
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Model::drawAlg(glm::vec3 position, float angle, glm::vec3 scale, glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, GLuint bakedTexture, GLint uTextureName)
+void Model::drawModel(glm::vec3 position, float angle, glm::vec3 scale, glm::mat4 MVMatrix, GLint uMVMatrix, GLint uMVPMatrix, glm::mat4 ProjMatrix, glm::mat4 NormalMatrix, GLint uNormalMatrix, GLuint bakedTexture, GLint uTextureName)
 {
     glm::mat4 ViewMatrixModel = glm::translate(glm::mat4(1.0), position);
     ViewMatrixModel           = glm::scale(ViewMatrixModel, scale);

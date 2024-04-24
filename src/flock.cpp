@@ -217,24 +217,33 @@ void Flock::CheckOverflow(float limit)
 void Flock::ChangeStatesFlock()
 {
     timeSinceLastState += 1;
-    if (timeSinceLastState < 1000 / poissonGen)
+    if (poissonGen == 0)
+    {
+        poissonGen = 1;
+    }
+    if (timeSinceLastState < stateChangeDuringTime * (3000 / poissonGen)) // Si on est dans la période où les boids peuvent changer d'état
     {
         return;
     }
-    poissonGen = randgen::Poisson(3);
-
+    stateChangeDuringTime++;
     glm::mat4 markovMat = glm::mat4(
         glm::vec4(0.30f, 0.30f, 0.30f, 0.10f),
         glm::vec4(0.30f, 0.30f, 0.30f, 0.10f),
         glm::vec4(0.30f, 0.30f, 0.30f, 0.10f),
         glm::vec4(0.10f, 0.10f, 0.10f, 0.70f)
     );
-
+    std ::cout << "changement d'état" << std::endl;
     for (auto& boid : flock)
     {
         randgen::chaine_markov(boid, markovMat);
     }
-    timeSinceLastState = 0;
+    if (timeSinceLastState > 3000)
+    {
+        std::cout << timeSinceLastState << std::endl;
+        timeSinceLastState    = 0;
+        stateChangeDuringTime = 0;
+        poissonGen            = randgen::Poisson(3);
+    }
 }
 
 void Flock::Update(float limit)

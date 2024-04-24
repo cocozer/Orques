@@ -32,6 +32,7 @@ Interface::Interface()
     img::Image img_water   = p6::load_image_buffer("../assets/textures/water_texture.png");
     img::Image img_turtle  = p6::load_image_buffer("../assets/textures/turtleBaked.png");
     img::Image img_alg     = p6::load_image_buffer("../assets/textures/alg_texture.png");
+    img::Image img_chest   = p6::load_image_buffer("../assets/textures/chest-texture.png");
 
     Model kw = Model();
     kw.loadModel("kw.obj");
@@ -44,6 +45,9 @@ Interface::Interface()
 
     Model alg = Model();
     alg.loadModel("alg.obj");
+
+    Model chest = Model();
+    chest.loadModel("chest.obj");
 
     GLuint bakeTurtle = 0;
     glGenTextures(1, &bakeTurtle);
@@ -110,11 +114,21 @@ Interface::Interface()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
 
+    GLuint bakeChest = 0;
+    glGenTextures(1, &bakeChest);
+    glBindTexture(GL_TEXTURE_2D, bakeChest);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_chest.width(), img_chest.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img_chest.data());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     // on bind le vbo de l'orque 3D
     kw.setVbo();
     skybox.setVbo();
     turtle.setVbo();
     alg.setVbo();
+    chest.setVbo();
 
     // on active le test de profondeur
     glEnable(GL_DEPTH_TEST);
@@ -124,6 +138,7 @@ Interface::Interface()
     skybox.setVao();
     turtle.setVao();
     alg.setVao();
+    chest.setVao();
 
     // on initialise les matrices de transformation pour les shaders
     glm::mat4 ProjMatrix;
@@ -253,7 +268,7 @@ Interface::Interface()
         flock.drawFlock3D(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, kw, bakesKw, uTexture);
         surveyor.drawSurveyor(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, turtle, bakeTurtle, uTexture, left, right);
         randgen::drawAlgues(algPos, algAngles, MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, bakeAlg, uTexture, alg);
-        kw.drawModel(chestPos, glm::vec3(1), MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, bakeKwRed, uTexture);
+        chest.drawModel(chestPos, -M_PI / 2, glm::vec3(0.5), MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, bakeChest, uTexture);
         // on debind le vao
         glBindVertexArray(0);
     };
@@ -270,13 +285,4 @@ void Interface::run_update_loop()
 void Interface::setNumberOfBoids(int num)
 {
     flock = boids::Flock(num);
-    Boid bleu;
-    bleu.setState(1);
-    flock.AddBoid(bleu);
-    Boid vert;
-    vert.setState(2);
-    flock.AddBoid(vert);
-    Boid predator;
-    predator.setState(3);
-    flock.AddBoid(predator);
 }

@@ -100,7 +100,7 @@ void drawAlgues(std::vector<glm::vec3> algPos, std::vector<float> algAngle, glm:
 {
     for (int i = 0; i < algPos.size(); i++)
     {
-        model.drawAlg(algPos[i], algAngle[i], glm::vec3(1), MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, bakedAlgue, uTexture);
+        model.drawModel(algPos[i], algAngle[i], glm::vec3(1), MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, bakedAlgue, uTexture);
     }
 }
 
@@ -174,7 +174,7 @@ glm::vec3 chest_pos(float taille_cube)
     double chest_x, chest_z;
     chest_x             = Beta(2, 5, taille_cube);
     chest_z             = Beta(5, 1, taille_cube);
-    glm::vec3 chest_pos = {chest_x, -taille_cube * 2, chest_z};
+    glm::vec3 chest_pos = {chest_x, -taille_cube * 2 + 2, chest_z};
     return chest_pos;
 }
 
