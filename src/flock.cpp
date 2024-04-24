@@ -1,7 +1,9 @@
 #include "flock.hpp"
 #include <cassert>
 #include "glm/fwd.hpp"
+#include "random.hpp"
 #include "test_sphere.hpp"
+
 // blalalalala
 namespace boids {
 
@@ -218,6 +220,27 @@ void Flock::CheckOverflow(float limit)
     }
 }
 
+void Flock::ChangeStatesFlock()
+{
+    timeSinceLastState += 1;
+    if (timeSinceLastState < 500)
+    {
+        return;
+    }
+
+    glm::mat4 markovMat = glm::mat4(
+        glm::vec4(0.30f, 0.30f, 0.30f, 0.10f),
+        glm::vec4(0.30f, 0.30f, 0.30f, 0.10f),
+        glm::vec4(0.30f, 0.30f, 0.30f, 0.10f),
+        glm::vec4(0.10f, 0.10f, 0.10f, 0.70f)
+    );
+
+    for (auto& boid : flock)
+    {
+        randgen::chaine_markov(boid, markovMat);
+    }
+    timeSinceLastState = 0;
+}
 // void Boids::UpdateVelocities() {
 //     // À implémenter
 // }

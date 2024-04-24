@@ -1,4 +1,6 @@
 #include "random.hpp"
+#include "boid.hpp"
+#include "flock.hpp"
 #include "glm/fwd.hpp"
 #include "glm/glm.hpp"
 #include "model.hpp"
@@ -109,56 +111,48 @@ double Exponentielle(double min, double max, double lambda) // génération d'un
     return min + (max - min) * u2;
 }
 
-// void markov_suivant(Boid& boid, glm::vec4 v)
-// {
-//     float a = Rand01();
-//     if (a < v[0])
-//     {
-//         boid.setState(0);
-//     }
-//     else if (a < v[0] + v[1])
-//     {
-//         boid.setState(1);
-//     }
-//     else if (a < v[0] + v[1] + v[2])
-//     {
-//         boid.setState(2);
-//     }
-//     else if (a < v[0] + v[1] + v[2] + v[3])
-//     {
-//         boid.setState(3);
-//     }
-//     else
-//     {
-//         boid.setState(4);
-//     }
-// }
+void markov_suivant(Boid& boid, glm::vec4 v)
+{
+    float a = Rand01();
+    if (a < v[0])
+    {
+        boid.setState(0);
+    }
+    else if (a < v[0] + v[1])
+    {
+        boid.setState(1);
+    }
+    else if (a < v[0] + v[1] + v[2])
+    {
+        boid.setState(2);
+    }
+    else if (a < v[0] + v[1] + v[2] + v[3])
+    {
+        boid.setState(3);
+    }
+    else
+    {
+        boid.setState(4);
+    }
+}
 
-// void chaine_markov(Boid& boid, glm::mat4 markovMat)
-// {
-//     switch (boid.getState())
-//     {
-//     case 0:
-//         markov_suivant(boid, markovMat[0]);
-//         break;
-//     case 1:
-//         markov_suivant(boid, markovMat[1]);
-//         break;
-//     case 2:
-//         markov_suivant(boid, markovMat[2]);
-//         break;
-//     case 3:
-//         markov_suivant(boid, markovMat[3]);
-//         break;
-//     }
-// }
-
-// void changeBoidState(boids::Flock flock, p6::Context ctx)
-// {
-//     for (const Boid& boid : flock)
-//     {
-//         chaine_markov(boid, markovMat);
-//     }
-// }
+void chaine_markov(Boid& boid, glm::mat4 markovMat)
+{
+    switch (boid.getState())
+    {
+    case 0:
+        markov_suivant(boid, markovMat[0]);
+        break;
+    case 1:
+        markov_suivant(boid, markovMat[1]);
+        break;
+    case 2:
+        markov_suivant(boid, markovMat[2]);
+        break;
+    case 3:
+        markov_suivant(boid, markovMat[3]);
+        break;
+    }
+}
 
 } // namespace randgen

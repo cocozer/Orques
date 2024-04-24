@@ -19,6 +19,7 @@ private:
     double            min_speed{0.05};
     double            max_speed{0.1};
     double            fear_predator{0.01};
+    int               timeSinceLastState = 0;
 
 public:
     // Flock();
@@ -50,6 +51,7 @@ public:
     void setAverageSpeed(float factor);
     void setTurningFactor(float factor);
     void setAvoidPredator(float fear_predator);
+    void ChangeStatesFlock();
 
 private:
     // Méthodes pour mettre à jour tous les boids dans le vecteur
@@ -60,6 +62,7 @@ private:
     void Cohesion();
     void ClampSpeed();
     void CheckOverflow(float limit);
+
     void assert_index_is_valid(int index);
     void avoidPredators();
 

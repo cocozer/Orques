@@ -239,6 +239,7 @@ Interface::Interface()
         surveyor.update_camera(MVMatrix);
         // config du shader
         shader.use();
+        flock.ChangeStatesFlock();
 
         // light
         lightScene.drawLightScene(glm::vec3(0.f, 20.f, 10.f), ProjMatrix, MVMatrix, uMVPMatrix, uMVMatrix, uNormalMatrix, shader, uKd, uKs, uShininess, uLightPos_vs, uLightIntensity);
