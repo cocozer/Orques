@@ -178,4 +178,8 @@ glm::vec3 chest_pos(float taille_cube)
     return chest_pos;
 }
 
+bool Bernoulli(double p) { // loi de bernoulli, p étant la probabilité de succès, p=0.5 pour équilibre
+    return Rand01() < p;
+}
+
 } // namespace randgen
