@@ -238,7 +238,6 @@ void Flock::ChangeStatesFlock()
     }
     if (timeSinceLastState > 2000)
     {
-        std::cout << timeSinceLastState << std::endl;
         timeSinceLastState    = 0;
         stateChangeDuringTime = 0;
         poissonGen            = randgen::Poisson(3);
