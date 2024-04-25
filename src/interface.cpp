@@ -292,6 +292,18 @@ Interface::Interface()
     // Should be done last. It starts the infinite loop.
     setNumberOfBoids(10);
     ctx.start();
+    // destructeur model
+    kw.~Model();
+    skybox.~Model();
+    turtle.~Model();
+    alg.~Model();
+    chest.~Model();
+    floatie.~Model();
+
+    // destructeur cam, surveyor, light
+    surveyor.~Surveyor();
+    lightSurveyor.~Light();
+    lightScene.~Light();
 }
 
 void Interface::run_update_loop()
