@@ -14,6 +14,7 @@ uniform sampler2D uText;
 uniform vec3 uKd;
 uniform vec3 uKs;
 uniform float uShininess;
+uniform float uShininess2;
 uniform vec3 uLightPos_vs;
 uniform vec3 uLightIntensity;
 uniform vec3 uLightPos2_vs;
@@ -27,6 +28,15 @@ vec3 blinnPhong(vec3 uLightPos_vs, vec3 uLightIntensity) {
   vec3 N = vNormal_vs;
   vec3 halfVector = (w0 + wi) / 2.;
   return Li * (uKd * (dot(wi, N)) + uKs * pow(dot(halfVector, N), uShininess));
+}
+vec3 blinnPhong2(vec3 uLightPos_vs, vec3 uLightIntensity) {
+  float d = distance(vPosition_vs, uLightPos_vs);
+  vec3 wi = normalize(uLightPos_vs - vPosition_vs);
+  vec3 Li = (uLightIntensity / (d * d));
+  vec3 w0 = (normalize(-vPosition_vs));
+  vec3 N = vNormal_vs;
+  vec3 halfVector = (w0 + wi) / 2.;
+  return Li * (uKd * (dot(wi, N)) + uKs * pow(dot(halfVector, N), uShininess2));
 }
 
 void main() {    

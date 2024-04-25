@@ -16,7 +16,7 @@
 #include "tiny_obj_loader.h"
 
 Interface::Interface()
-    : ctx{{1280, 720, "Cher ImGui"}}, rayon_cube(15.0f), nombre_boids(10), taille_boids(0.1f), separation(0.001f), alignement(0.00018f), cohesion(0.0002f), protected_range(3.5), visible_range(13), average_speed(0.01), turning_factor(0.005), fear_predator(0.001f), texte("Test")
+    : ctx{{1280, 720, "Cher ImGui"}}, rayon_cube(15.0f), nombre_boids(10), taille_boids(0.1f), separation(0.001f), alignement(0.00018f), cohesion(0.0002f), protected_range(3.5), visible_range(13), average_speed(0.01), turning_factor(0.005), fear_predator(0.001f)
 {
     /*********************************
      * INITIALIZATION CODE
@@ -169,6 +169,7 @@ Interface::Interface()
     GLint uKd              = glGetUniformLocation(shader.id(), "uKd");
     GLint uKs              = glGetUniformLocation(shader.id(), "uKs");
     GLint uShininess       = glGetUniformLocation(shader.id(), "uShininess");
+    GLint uShininess2      = glGetUniformLocation(shader.id(), "uShininess2");
     GLint uLightPos_vs     = glGetUniformLocation(shader.id(), "uLightPos_vs");
     GLint uLightIntensity  = glGetUniformLocation(shader.id(), "uLightIntensity");
     GLint uLightPos2_vs    = glGetUniformLocation(shader.id(), "uLightPos2_vs");
@@ -189,8 +190,8 @@ Interface::Interface()
     bool     up    = false;
     bool     down  = false;
 
-    Light lightScene    = Light(glm::vec3{350.});
-    Light lightSurveyor = Light(glm::vec3{0.01});
+    Light lightScene    = Light(glm::vec3{300.});
+    Light lightSurveyor = Light(glm::vec3{1.5});
 
     ctx.imgui = [&]() {
         // Affiche une fenêtre simple
@@ -246,7 +247,6 @@ Interface::Interface()
         {
             flock.setAvoidPredator(fear_predator);
         }
-        ImGui::InputText("Texte", &texte);
 
         ImGui::End();
 
@@ -274,9 +274,8 @@ Interface::Interface()
         flock.ChangeStatesFlock();
 
         // light
-        lightScene.drawLightScene(glm::vec3(0.f, 20.f, 10.f), ProjMatrix, MVMatrix, uMVPMatrix, uMVMatrix, uNormalMatrix, shader, uKd, uKs, uShininess, uLightPos_vs, uLightIntensity);
-        // lightScene2.drawLightScene(glm::vec3(0.f, 20.f, 15.f), ProjMatrix, MVMatrix, uMVPMatrix, uMVMatrix, uNormalMatrix, shader, uKd, uKs, uShininess, uLightPos_vs, uLightIntensity);
-        lightSurveyor.drawLightSurveyor(surveyor.getPosition(), ProjMatrix, MVMatrix, uMVPMatrix, uMVMatrix, uNormalMatrix, uLightPos2_vs, uLightIntensity2);
+        lightScene.drawLightScene(glm::vec3(0.f, 20.f, 4.f), ProjMatrix, MVMatrix, uMVPMatrix, uMVMatrix, uNormalMatrix, shader, uKd, uKs, uShininess, uLightPos_vs, uLightIntensity);
+        lightSurveyor.drawLightSurveyor(surveyor.getPosition(), ProjMatrix, MVMatrix, uMVPMatrix, uMVMatrix, uNormalMatrix, shader, uKd, uKs, uShininess2, uLightPos2_vs, uLightIntensity2);
 
         //  on utilise le shader
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
