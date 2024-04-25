@@ -221,7 +221,7 @@ void Flock::ChangeStatesFlock()
     {
         poissonGen = 1;
     }
-    if (timeSinceLastState < stateChangeDuringTime * (3000 / poissonGen)) // Si on est dans la période où les boids peuvent changer d'état
+    if (timeSinceLastState < stateChangeDuringTime * (2000 / poissonGen)) // Si on est dans la période où les boids peuvent changer d'état
     {
         return;
     }
@@ -236,7 +236,7 @@ void Flock::ChangeStatesFlock()
     {
         randgen::chaine_markov(boid, markovMat);
     }
-    if (timeSinceLastState > 3000)
+    if (timeSinceLastState > 2000)
     {
         std::cout << timeSinceLastState << std::endl;
         timeSinceLastState    = 0;
