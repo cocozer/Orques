@@ -1,4 +1,5 @@
 #include "random.hpp"
+#include <iostream>
 #include "boid.hpp"
 #include "flock.hpp"
 #include "glm/fwd.hpp"
@@ -178,8 +179,22 @@ glm::vec3 chest_pos(float taille_cube)
     return chest_pos;
 }
 
-bool Bernoulli(double p) { // loi de bernoulli, p étant la probabilité de succès, p=0.5 pour équilibre
+bool Bernoulli(double p)
+{ // loi de bernoulli, p étant la probabilité de succès, p=0.5 pour équilibre
     return Rand01() < p;
+}
+
+glm::vec3 floatie_pos(float taille_cube)
+{
+    bool isFloatieHoled = Bernoulli(0.5);
+    if (isFloatieHoled)
+    {
+        return {0.0f, taille_cube * 2 - Exponentielle(0, taille_cube * 2, 5), 0.0f};
+    }
+    else
+    {
+        return {0.0f, -(taille_cube * 2) + Exponentielle(0, taille_cube * 2, 5), 0.0f};
+    }
 }
 
 } // namespace randgen

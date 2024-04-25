@@ -33,6 +33,7 @@ Interface::Interface()
     img::Image img_turtle  = p6::load_image_buffer("../assets/textures/turtleBaked.png");
     img::Image img_alg     = p6::load_image_buffer("../assets/textures/alg_texture.png");
     img::Image img_chest   = p6::load_image_buffer("../assets/textures/chest-texture.png");
+    img::Image img_floatie = p6::load_image_buffer("../assets/textures/floatie-texture.png");
 
     Model kw = Model();
     kw.loadModel("kw.obj");
@@ -48,6 +49,9 @@ Interface::Interface()
 
     Model chest = Model();
     chest.loadModel("chest.obj");
+
+    Model floatie = Model();
+    floatie.loadModel("floatie.obj");
 
     GLuint bakeTurtle = 0;
     glGenTextures(1, &bakeTurtle);
@@ -123,12 +127,22 @@ Interface::Interface()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
 
+    GLuint bakeFloatie = 0;
+    glGenTextures(1, &bakeFloatie);
+    glBindTexture(GL_TEXTURE_2D, bakeFloatie);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_floatie.width(), img_floatie.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img_floatie.data());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     // on bind le vbo de l'orque 3D
     kw.setVbo();
     skybox.setVbo();
     turtle.setVbo();
     alg.setVbo();
     chest.setVbo();
+    floatie.setVbo();
 
     // on active le test de profondeur
     glEnable(GL_DEPTH_TEST);
@@ -139,6 +153,7 @@ Interface::Interface()
     turtle.setVao();
     alg.setVao();
     chest.setVao();
+    floatie.setVao();
 
     // on initialise les matrices de transformation pour les shaders
     glm::mat4 ProjMatrix;
@@ -238,10 +253,11 @@ Interface::Interface()
         // Affiche la fenêtre de démonstration officielle d'ImGui
         ImGui::ShowDemoWindow();
     };
-    std::vector<glm::vec3> algPos    = randgen::generateAlgues(500, rayon_cube);
-    std::vector<float>     algAngles = randgen::generateAngles(500);
-    glm::vec3              chestPos  = randgen::chest_pos(rayon_cube);
-    ctx.update                       = [&]() {
+    std::vector<glm::vec3> algPos     = randgen::generateAlgues(500, rayon_cube);
+    std::vector<float>     algAngles  = randgen::generateAngles(500);
+    glm::vec3              chestPos   = randgen::chest_pos(rayon_cube);
+    glm::vec3              floatiePos = randgen::floatie_pos(rayon_cube);
+    ctx.update                        = [&]() {
         ctx.background({1, 0.5, 0.7, 1});
         ctx.square(p6::Center{}, p6::Radius{rayon_cube});
         flock.Update(rayon_cube);
@@ -269,6 +285,8 @@ Interface::Interface()
         surveyor.drawSurveyor(MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, turtle, bakeTurtle, uTexture, left, right);
         randgen::drawAlgues(algPos, algAngles, MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, bakeAlg, uTexture, alg);
         chest.drawModel(chestPos, -M_PI / 2, glm::vec3(0.5), MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, bakeChest, uTexture);
+        floatie.drawModel(floatiePos, glm::vec3(1), MVMatrix, uMVMatrix, uMVPMatrix, ProjMatrix, NormalMatrix, uNormalMatrix, bakeFloatie, uTexture);
+
         // on debind le vao
         glBindVertexArray(0);
     };

@@ -232,7 +232,6 @@ void Flock::ChangeStatesFlock()
         glm::vec4(0.30f, 0.30f, 0.30f, 0.10f),
         glm::vec4(0.10f, 0.10f, 0.10f, 0.70f)
     );
-    std ::cout << "changement d'état" << std::endl;
     for (auto& boid : flock)
     {
         randgen::chaine_markov(boid, markovMat);
